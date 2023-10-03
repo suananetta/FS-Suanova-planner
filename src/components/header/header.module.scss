@@ -1,0 +1,51 @@
+@import '../_shared/styles/mixins.scss';
+@import '../_shared/styles/vars.scss';
+
+
+.headerIntro {
+    @include display-setting(row, center, center);
+    h1 {
+        margin: 0;
+        padding: 0;
+        @include font-setting(400, 64px, 120%);  
+    }
+}
+.logo {
+    width: max-content;
+    margin-right: 19px;
+    @include display-setting(row, center, center);
+    span {
+        margin-left: 35px;
+        @include font-setting(400, 26px, 120%);  
+    }
+}
+.title {
+    span {
+        color: $main-accent;
+    }
+}
+.headerControls {
+    @include display-setting(row, center, center);
+    span {
+        margin-right: 32px;
+        @include font-setting(400, 26px, 120%);  
+    }
+}
+.monthControls {
+    button {
+        padding: 8px 16px;
+        background-color: $buttons-gray;
+        border-radius: 8px;
+    }
+    :nth-child(2) {
+        margin-right: 8px;
+    }
+}
+.authorizationBtn {
+    margin-left: 134px;
+    padding: 21px 32px;
+    color: $main-white;
+    background-color: $main-black;
+    border-radius: 12px;
+    @include font-setting(400, 18px, 100%);  
+}

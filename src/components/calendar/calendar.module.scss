@@ -1,0 +1,49 @@
+@import '../_shared/styles/mixins.scss';
+@import '../_shared/styles/vars.scss';
+
+.dayNames {
+    margin-top: 104px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+.dayName {
+    padding-bottom: 16px;
+    @include font-setting(400, 24px, 100%);  
+    @include display-setting(row, flex-end, baseline);
+}
+.cells {
+    width: 100%;
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(7, 1fr);
+    grid-gap: 1px;
+    border: 1px solid $main-gray;
+    background-color: $main-gray;
+    border-radius: 24px;
+    div:nth-child(7n-1) {
+        background-color: $light-gray;
+    }
+    div:nth-child(7n) {
+        background-color: $light-gray;
+    }
+}
+
+.cell {
+    min-height: 128px;
+    background-color:$main-white;
+    padding: 12px 12px 18px 0px;
+    @include display-setting(row, flex-end, baseline);
+    &:first-child {
+        border-radius: 24px 0 0 0;
+    }
+    &:nth-child(7) {
+        border-radius: 0 24px 0 0;
+    }
+    &:nth-child(36) {
+        border-radius: 0 0 0 24px;
+    }
+    &:nth-child(42) {
+        border-radius: 0 0 24px 0;
+    }
+}
