@@ -13,6 +13,7 @@
     @include display-setting(row, flex-end, baseline);
 }
 .cells {
+    margin-bottom: 104px;
     width: 100%;
     display: grid;
     align-items: center;
