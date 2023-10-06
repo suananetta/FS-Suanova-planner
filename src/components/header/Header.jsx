@@ -10,9 +10,12 @@ import Image from 'next/image'
 import styles from './header.module.scss'
 
 import { model as monthModel } from '../_store/monthControl'
-import Button from '../_shared/Button/Button'
+import { model as modalModel } from '../_store/modalControl'
+import { getMonthDays } from '../_utils/utils'
+import { getEventsForPublic } from '../_axios/requests'
+import Button from '../_shared/button/Button'
 
-function Header({setMonthDays}) {
+function Header({setMonthDays, setModalOpened}) {
     const [currentDate, prevMonth, nextMonth] = useUnit([
         monthModel.$currentDate,
         monthModel.prevMonth,
@@ -20,24 +23,20 @@ function Header({setMonthDays}) {
     ]
     );
 
-    let [currentMonth, setCurrentMonth] = useState(currentDate.format('MMMM'));
-
-    let arrowBack = <Image src="/arrow-back.svg" width={32} height={32} alt="arrow back" />;
-    let arrowForward = <Image src="/arrow-forward.svg" width={32} height={32} alt="arrow forward" />;
-
-    let getMonthDays = (date) => {
-        moment.updateLocale('ru', {week: {dow: 1}});
-
-        let firstDay = date.clone().startOf('month').startOf('week');
-        let d = firstDay.clone().subtract(1, 'day');
-
-        let arr = [...Array(42)].map(() => d.add(1, 'day').clone());
-        return arr;
-    }
-
+    const [authModal, controlModal] = useUnit ([
+        modalModel.$authModal,
+        modalModel.controlModal,
+    ]
+    );
+    // console.log(authModal);
     useEffect(() => {
         setMonthDays(getMonthDays(moment()));
     }, [])
+
+    let [currentMonth, setCurrentMonth] = useState(currentDate.format('MMMM'));
+
+    let arrowBack = <Image src="/arrow-back.svg" width={32} height={32} alt="arrow back" />;
+    let arrowForward = <Image src="/arrow-forward.svg" width={32} height={32} alt="arrow forward" />; 
 
     return (
         <header>
@@ -80,7 +79,10 @@ function Header({setMonthDays}) {
                     btnClass={styles.authorizationBtn}
                     btnName='Войти'
                     disabled={false}
-                    // onClick
+                    onClick = {() => {
+                        controlModal();
+                        setModalOpened(authModal.opened);
+                    }}
                 />
             </div>
         </header>

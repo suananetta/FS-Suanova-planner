@@ -5,6 +5,7 @@ body {
 button {
   border: none;
   font-family: '__redcollar_776ffc', '__redcollar_Fallback_776ffc';
+  background-color: transparent;
 }
 button:hover {
   cursor: pointer;

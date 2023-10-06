@@ -1,0 +1,26 @@
+@import '../styles/mixins.scss';
+@import '../styles/vars.scss';
+
+.modal {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba($main-black, 0.4);
+    @include display-setting(row, center, center);
+}
+.modalContent {
+    height: max-content;
+    width: max-content;
+    padding: 80px 64px;
+    background-color: $main-white;
+    border-radius: 64px;
+    @include display-setting(column, center, center);
+}
+.modalCloseBtn {
+    align-self: flex-end;
+}

@@ -14,7 +14,6 @@ import Image from "next/image"
 import { useEffect, useState } from 'react'
 
 function Calendar({monthDays}) {
-
     const currentDate = useUnit(monthModel.$currentDate);
     const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 

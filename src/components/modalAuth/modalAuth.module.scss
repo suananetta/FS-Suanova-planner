@@ -1,0 +1,80 @@
+@import '../_shared/styles/mixins.scss';
+@import '../_shared/styles/vars.scss';
+
+
+.modalAuth {
+    width: 80%;
+    padding: 53px 47px;
+    @include display-setting(column, center, center);
+    h2 {
+        margin: 0;
+        padding: 0;
+        @include font-setting(400, 36px, 100%);  
+    }
+    input {
+        margin: 40px 0 48px 0;
+        width: 346px;
+        height: 37px;
+        line-height: 1;
+        padding: 24px 16px 10px; 
+        border-radius: 12px;
+        border: 1px solid $main-black;
+    }
+    label {
+        position: absolute;
+        top: 40px;
+        left: 4px;
+        height: 37px;
+        padding: 10px;
+        pointer-events: none;
+        color: $main-gray;
+    }
+}
+.modalInput {
+    position: relative;
+    
+}
+.modalContinueBtn {
+    width: 100%;
+    padding: 21px 32px;
+    color: $main-white;
+    background-color: $main-black;
+    border-radius: 12px;
+    @include font-setting(400, 18px, 100%);  
+}
+.regInfo {
+    width: 60%;
+    margin-top: 16px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background-color: $light-gray;
+    text-wrap: wrap;
+    @include font-setting(400, 14px, 120%);  
+    @include display-setting(row, flex-start, center);
+    img {
+        margin-right: 8px;
+    }
+}
+.modalInputRepeat {
+    input {
+        margin-top: 0;
+        padding: 18px 16px; 
+        &::-moz-placeholder, &::placeholder {
+            color: transparent;
+        }
+        &:focus, &:not(:placeholder-shown) {
+            padding-top: 1.625rem;
+            padding-bottom: .625rem;
+        }
+        &:focus, &:not(:placeholder-shown) {
+            opacity: .65;
+            transform: scale(.85) translateY(-.75rem) translateX(.15rem);
+        }
+
+    }
+    label {
+        transform-origin: 0 0;
+        transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+    }
+    
+}
