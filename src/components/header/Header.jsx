@@ -11,11 +11,11 @@ import styles from './header.module.scss'
 
 import { model as monthModel } from '../_store/monthControl'
 import { model as modalModel } from '../_store/modalControl'
+import { model as  authModel} from '../_store/auth'
 import { getMonthDays } from '../_utils/utils'
-import { getEventsForPublic } from '../_axios/requests'
 import Button from '../_shared/button/Button'
 
-function Header({setMonthDays, setModalOpened}) {
+function Header({setMonthDays, setModalOpened, token}) {
     const [currentDate, prevMonth, nextMonth] = useUnit([
         monthModel.$currentDate,
         monthModel.prevMonth,
@@ -28,15 +28,16 @@ function Header({setMonthDays, setModalOpened}) {
         modalModel.controlModal,
     ]
     );
-    // console.log(authModal);
+
     useEffect(() => {
         setMonthDays(getMonthDays(moment()));
-    }, [])
+    }, []);
 
     let [currentMonth, setCurrentMonth] = useState(currentDate.format('MMMM'));
 
     let arrowBack = <Image src="/arrow-back.svg" width={32} height={32} alt="arrow back" />;
     let arrowForward = <Image src="/arrow-forward.svg" width={32} height={32} alt="arrow forward" />; 
+    let addEvent = <Image src="/add-event.svg" width={22} height={22} alt="arrow forward" />; 
 
     return (
         <header>
@@ -75,16 +76,29 @@ function Header({setMonthDays, setModalOpened}) {
                         }}
                     />
                 </div>
-                <Button
-                    btnClass={styles.authorizationBtn}
-                    btnName='Войти'
-                    disabled={false}
-                    onClick = {() => {
-                        controlModal();
-                        setModalOpened(authModal.opened);
-                    }}
-                />
-            </div>
+                {
+                    token === null?
+                        <Button
+                            btnClass={styles.authorizationBtn}
+                            btnName='Войти'
+                            disabled={false}
+                            onClick = {() => {
+                                controlModal();
+                                setModalOpened(authModal.opened);
+                            }}
+                        />
+                    :
+                        <div className={styles.userBlock}>
+                            <Button
+                                btnClass={styles.addEventBtn}
+                                btnName={addEvent}
+                                disabled={false}
+                                // onClick = {}
+                            />
+                            <div className={styles.userAvatar} style={{backgroundImage: `url(${'/user-head.png'})`}}></div>
+                        </div>
+                }
+                </div>
         </header>
     )
 }

@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { model as authModel } from '../_store/auth';
+
 const BASE_URL = 'http://localhost:1337/api';
 
 const plannerApi = axios.create({
@@ -18,7 +20,7 @@ plannerApi.interceptors.request.use(config => {
 plannerApiLoged.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json';
     config.headers.Accept = 'application/json';
-    config.headers.Authorization = localStorage.getItem('token') != null? `Bearer ${JSON.parse(localStorage.getItem('token')).accessToken}` : '';
+    config.headers.Authorization = localStorage.getItem('token') != null? `Bearer ${JSON.parse(localStorage.getItem('token'))}` : '';
     return config;
 });
 
@@ -32,6 +34,10 @@ export const loginUser = async (identifier, password) => {
 
 export const registerUser = async (username, email, password) => {
     return plannerApi.post('/auth/local/register', {username, email, password})
+}
+
+export const getUserInfo = async () => {
+    return plannerApiLoged.get(`/users/me`)
 }
 
 export const getEventsForPublic = async () => {

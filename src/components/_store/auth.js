@@ -1,20 +1,21 @@
 import { createEffect, createEvent, createStore, sample } from "effector"
-import { checkUserExistence, loginUser} from "../_axios/requests";
+import { checkUserExistence, loginUser, registerUser, getUserInfo} from "../_axios/requests";
 
 const $userToken = createStore(null);
 
 const checkUserFx = createEffect(async(email) => {
     let result = await checkUserExistence(email);
-    if(result.status === 204) {
-        return false
-    } else {
-        return true
-    };
+    return result;  
 });
 
-const loginUserFx = createEffect(async(email, password) => {
-    let result = await loginUser(email, password);
-    return result.data.jwt;
+const loginUserFx = createEffect(async(userInfo) => {
+    let result = await loginUser(userInfo.email, userInfo.password);
+    return result;
+});
+
+const registerUserFx = createEffect(async(userInfo) => {
+    let result = await registerUser(userInfo.username, userInfo.email, userInfo.password);
+    return result;
 });
 
 let getUserToken = createEvent();
@@ -32,5 +33,6 @@ export const model = {
     $userToken,
     checkUserFx,
     loginUserFx,
+    registerUserFx,
     getUserToken
 }

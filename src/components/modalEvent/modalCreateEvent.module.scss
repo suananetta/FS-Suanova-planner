@@ -1,0 +1,249 @@
+@import '../_shared/styles/mixins.scss';
+@import '../_shared/styles/vars.scss';
+
+.modalCreateEvent {
+    width: 947px;
+    @include display-setting(column, flex-start, flex-start);
+    h2 {
+        align-self: center;
+        margin-bottom: 64px;
+        @include font-setting(400, 36px, 100%);  
+    }
+    input {
+        width: 548px;
+        padding: 18px 16px;
+        border-radius: 12px;
+        border: 1px solid $main-gray;
+    }
+    input[type=file] {
+        height: 170px;      
+        opacity: 0;
+    }
+    label {
+        position: absolute;
+        height: 37px;
+        padding: 10px;
+        pointer-events: none;
+        color: $main-gray;
+    }
+    select {
+        min-width: 101%;
+        margin-bottom: 32px;
+        padding: 18px 16px;
+        border-radius: 12px;
+        border: 1px solid $main-gray;
+        background-color: transparent;
+        box-sizing: border-box;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+        appearance: none;
+    }
+}
+.eventForm {
+    @include display-setting(row, space-between, baseline);
+}
+.required {
+    color: $main-accent;
+}
+.eventDescriptionInfo {
+    width: 580px;
+    margin-right: 22px;
+    :nth-child(2) {
+        input {
+            height: 107px;
+        }
+    }
+    
+}
+.eventInfoItem {
+    position: relative;
+    margin-bottom: 32px;
+    input {
+        margin-top: 0;
+        padding: 18px 16px; 
+        &:focus {
+            padding-top: 27px;
+            padding-bottom: 11px;
+        }
+        &:focus~.eventLable {
+            transform: translateY(-5px);
+            @include font-setting(400, 14px, 100%);  
+        }
+        
+    }
+    label {
+        top: 0;
+        left: 7px;
+        transform-origin: 0 0;
+        @include font-setting(400, 20px, 110%);  
+        transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+        opacity: 1;
+        transform: translateY(10px);
+    }
+}
+.selectInfoItem {
+    position: relative;
+    .selectLable {
+        top: 8px;
+        left: 7px;
+        @include font-setting(400, 20px, 110%);  
+    }
+    select {
+        &:focus~.selectLable {
+            transform: translateY(-5px);
+            @include font-setting(400, 14px, 100%);  
+        }
+    }
+}
+.filesInfoItem {
+    position: relative;
+    width: 548px;
+    label {
+        top: 0;
+        left: 0;
+        width: 65%;
+        padding: 74px 113px;
+        text-wrap: nowrap;
+        border: 1px dashed $main-gray;
+        border-radius: 12px;
+        transform-origin: 0 0;
+        @include font-setting(400, 20px, 110%);  
+    }
+}
+.eventOrgInfo {
+    input[type=time], input[type=text] {
+        max-width: 346px;
+    }
+    
+}
+.eventDates {
+    margin-bottom: 32px;
+    input[type=date] {
+        padding: 10px 16px;
+        width: 149px;
+        height: 33px;
+    }
+    @include display-setting(row, space-between, baseline);
+    .startDate {
+        position: relative;
+        input {
+            &:focus~.labelStartDate {
+                background-color: transparent;
+                transform: translateY(-5px);
+                @include font-setting(400, 14px, 100%);  
+            }
+            
+        }
+        label {
+            top: 0;
+            left: 7px;
+            height: 15px;
+            background-color: $main-white;
+            transform-origin: 0 0;
+            @include font-setting(400, 20px, 110%);  
+            transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+            opacity: 1;
+            transform: translateY(10px);
+        }
+    }
+    .endDate {
+        position: relative;
+        input {
+            &:focus~.labelEndDate {
+                background-color: transparent;
+                transform: translateY(-5px);
+                @include font-setting(400, 14px, 100%);  
+            }
+            
+        }
+        label {
+            top: 0;
+            left: 7px;
+            height: 15px;
+            background-color: $main-white;
+            transform-origin: 0 0;
+            @include font-setting(400, 20px, 110%);  
+            transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+            opacity: 1;
+            transform: translateY(10px);
+        }
+    }
+}
+.eventTime {
+    position: relative;
+    margin-bottom: 32px;
+    input {
+        margin-top: 0;
+        padding: 18px 16px; 
+        &:focus {
+            padding-top: 27px;
+            padding-bottom: 11px;
+        }
+        &:focus~.labelTime {
+            background-color: transparent;
+            transform: translateY(-5px);
+            @include font-setting(400, 14px, 100%);  
+        }
+        
+    }
+    label {
+        top: 0;
+        left: 7px;
+        height: 15px;
+        background-color: $main-white;
+        transform-origin: 0 0;
+        @include font-setting(400, 20px, 110%);  
+        transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+        opacity: 1;
+        transform: translateY(10px);
+    }
+}
+.eventLocation {
+    position: relative;
+    input {
+        margin-top: 0;
+        padding: 18px 16px; 
+        &:focus {
+            padding-top: 27px;
+            padding-bottom: 11px;
+        }
+        &:focus~.labelLocation {
+            transform: translateY(-5px);
+            @include font-setting(400, 14px, 100%);  
+        }
+        
+    }
+    label {
+        top: 0;
+        left: 7px;
+        transform-origin: 0 0;
+        @include font-setting(400, 20px, 110%);  
+        transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+        opacity: 1;
+        transform: translateY(10px);
+    }
+}
+.eventInitiator {
+    margin-top: 45px;
+    @include display-setting(row, flex-start, center);  
+    .userAvatar {
+        width: 40px;
+        height: 40px;
+        margin-right: 12px;
+        border-radius: 40px;
+        background-color: $buttons-gray;
+        background-size: 150% 100%;
+        background-position: center;
+    }
+    .initiatorName {
+        @include display-setting(column, flex-start, flex-start);  
+        span {
+            padding: 2px 4px 1px 4px;
+            color: $badge-accent;
+            background-color: $badge;
+            border-radius: 8px;
+            @include font-setting(400, 14px, 100%);  
+            letter-spacing: -0.28px;
+        }
+    }
+}

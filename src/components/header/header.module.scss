@@ -49,3 +49,22 @@
     border-radius: 12px;
     @include font-setting(400, 18px, 100%);  
 }
+.userBlock {
+    margin-left: 134px;
+    @include display-setting(row, center, center);
+}
+.addEventBtn {
+    padding: 19px 32px;
+    color: $main-white;
+    background-color: $main-black;
+    border-radius: 12px;
+}
+.userAvatar {
+    width: 80px;
+    height: 80px;
+    margin-left: 33px;
+    border-radius: 100px;
+    background-color: $buttons-gray;
+    background-size: 150% 100%;
+    background-position: center;
+}

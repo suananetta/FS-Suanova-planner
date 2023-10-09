@@ -3,8 +3,7 @@
 
 
 .modalAuth {
-    width: 80%;
-    padding: 53px 47px;
+    width: 100%;
     @include display-setting(column, center, center);
     h2 {
         margin: 0;
@@ -13,7 +12,7 @@
     }
     input {
         margin: 40px 0 48px 0;
-        width: 346px;
+        width: 314px;
         height: 37px;
         line-height: 1;
         padding: 24px 16px 10px; 
@@ -23,7 +22,7 @@
     label {
         position: absolute;
         top: 40px;
-        left: 4px;
+        left: 6px;
         height: 37px;
         padding: 10px;
         pointer-events: none;
@@ -32,10 +31,9 @@
 }
 .modalInput {
     position: relative;
-    
 }
 .modalContinueBtn {
-    width: 100%;
+    width: 346px;
     padding: 21px 32px;
     color: $main-white;
     background-color: $main-black;
@@ -43,7 +41,7 @@
     @include font-setting(400, 18px, 100%);  
 }
 .regInfo {
-    width: 60%;
+    width: 53%;
     margin-top: 16px;
     padding: 8px 12px;
     border-radius: 12px;
@@ -56,25 +54,42 @@
     }
 }
 .modalInputRepeat {
+    position: relative;
     input {
         margin-top: 0;
         padding: 18px 16px; 
         &::-moz-placeholder, &::placeholder {
-            color: transparent;
+            color: $main-gray;
+            @include font-setting(400, 20px, 110%);  
         }
-        &:focus, &:not(:placeholder-shown) {
-            padding-top: 1.625rem;
-            padding-bottom: .625rem;
+        &:focus {
+            padding-top: 24px;
+            padding-bottom: 10px;
+            &::placeholder {
+                color: transparent;
+            }
         }
-        &:focus, &:not(:placeholder-shown) {
-            opacity: .65;
-            transform: scale(.85) translateY(-.75rem) translateX(.15rem);
+        &:focus~.authLable {
+            opacity: 1;
+            transform: translateY(0px);
         }
-
     }
     label {
+        top: 0;
         transform-origin: 0 0;
         transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+        opacity: 0;
+        transform: translateY(20px);
     }
-    
+}
+.passwordControl {
+	position: absolute;
+	top: 60px;
+	right: 25px;
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+    &:hover {
+        cursor: pointer;
+    }
 }

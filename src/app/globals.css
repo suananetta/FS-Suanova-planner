@@ -12,6 +12,10 @@ button:hover {
   transform: scale(1.03);
   transition: 0.2s;
 }
+button:disabled {
+  color: #B3B3BC;
+  background-color: #EFEFEF;
+}
 
 header {
   padding: 30px 0;
