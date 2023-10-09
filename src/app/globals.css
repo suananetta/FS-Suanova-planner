@@ -16,7 +16,10 @@ button:disabled {
   color: #B3B3BC;
   background-color: #EFEFEF;
 }
-
+button:disabled:hover {
+  cursor: default;
+  transform: none;
+}
 header {
   padding: 30px 0;
   display: flex;

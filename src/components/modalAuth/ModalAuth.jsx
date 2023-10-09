@@ -21,31 +21,26 @@ function ModalAuth({setModalOpened, setToken}) {
     ]
     );
 
-    const [authModal, controlModal] = useUnit ([
-        modalModel.$authModal,
-        modalModel.controlModal,
+    const [modalOpened, controlModal] = useUnit ([
+        modalModel.$modalOpened,
+        modalModel.controAuthlModal,
     ]);
 
     let [emailFound, setEmailFound] = useState(false);
     let [registrartion, setRegistretion] = useState(false);
-
-    let [showPassword, setShowPassword] = useState(false);
-    let [showRepeatPassword, setShowRepeatPassword] = useState(false);
     
     let [email, setEmail] = useState('');
     let [password, setPassword] = useState('');
     let [repeatPassword, setRepeatPassword] = useState('');
 
+    let [showPassword, setShowPassword] = useState(false);
+    let [showRepeatPassword, setShowRepeatPassword] = useState(false);
+
     let infoIcon = <Image src="/info.svg" width={24} height={24} alt="information" />; 
     let openedPassword = "/password-show.svg";
     let hidenPassword = "/password-hide.svg";
 
-    let handleClickLogin = async () => {
-        let userInfo = {
-            "email": email,
-            "password": password
-        }
-
+    let handleClickEmail = async () => {
         try {
             let result = await checkUser(email);
             if(result.status === 204) {
@@ -55,18 +50,25 @@ function ModalAuth({setModalOpened, setToken}) {
         } catch (error) {
             setRegistretion(true);
         }
+    }
 
-        if(emailFound) {
-            let token = await loginUser(userInfo);
-            getUserToken(token.data.jwt);
-            setToken(token.data.jwt)
-            console.log(token);
-            localStorage.setItem('token', token.data.jwt)
-            if(token.status === 200) {
-                controlModal();
-                setModalOpened(authModal.opened);
-            }
-        }       
+    let handleClickLogin = async () => {
+        let userInfo = {
+            "email": email,
+            "password": password
+        }
+
+        let token = await loginUser(userInfo);
+
+        getUserToken(token.data.jwt);
+        setToken(token.data.jwt);
+
+        localStorage.setItem('token', token.data.jwt)
+
+        if(token.status === 200) {
+            controlModal();
+            setModalOpened(modalOpened.authlModal);
+        }
     }
 
     let handleClickRegister = async () => {
@@ -81,7 +83,7 @@ function ModalAuth({setModalOpened, setToken}) {
 
         if(result.status === 200) {
             controlModal();
-            setModalOpened(authModal.opened);
+            setModalOpened(modalOpened.authlModal);
         }
     }
 
@@ -122,11 +124,20 @@ function ModalAuth({setModalOpened, setToken}) {
                     <>
                     {
                         !emailFound?
+                            <>
                             <div className={styles.modalInput}>
                                 <input className={styles.auth} type="email" id="email" onChange={(e) => {setEmail(e.target.value)}}/>
                                 <label className={styles.auth} htmlFor="email">E-mail</label>
                             </div>
+                            <Button
+                                btnClass={styles.modalContinueBtn}
+                                btnName='Далее'
+                                disabled={email.trim().length === 0? true : false}
+                                onClick={handleClickEmail}
+                            />
+                            </>
                             :
+                            <>
                             <PasswordInput
                                 className={styles.modalInput}
                                 type={showPassword? 'text' : 'password'}
@@ -134,15 +145,15 @@ function ModalAuth({setModalOpened, setToken}) {
                                 onChange={(e) => {setPassword(e.target.value)}}
                                 background={showPassword? openedPassword : hidenPassword}
                                 onClick={() => setShowPassword(!showPassword)}
-                            />                          
-                    }
-
-                    <Button
-                        btnClass={styles.modalContinueBtn}
-                        btnName='Далее'
-                        disabled={false}
-                        onClick={handleClickLogin}
-                    />
+                            /> 
+                            <Button
+                                btnClass={styles.modalContinueBtn}
+                                btnName='Далее'
+                                disabled={password.trim().length === 0? true : false}
+                                onClick={handleClickLogin}
+                            />
+                            </>                         
+                    }                  
                     </>
             }       
         </div>

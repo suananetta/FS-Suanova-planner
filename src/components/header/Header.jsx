@@ -15,7 +15,7 @@ import { model as  authModel} from '../_store/auth'
 import { getMonthDays } from '../_utils/utils'
 import Button from '../_shared/button/Button'
 
-function Header({setMonthDays, setModalOpened, token}) {
+function Header({setMonthDays, openAuth, createEvent, token}) {
     const [currentDate, prevMonth, nextMonth] = useUnit([
         monthModel.$currentDate,
         monthModel.prevMonth,
@@ -23,12 +23,13 @@ function Header({setMonthDays, setModalOpened, token}) {
     ]
     );
 
-    const [authModal, controlModal] = useUnit ([
-        modalModel.$authModal,
-        modalModel.controlModal,
-    ]
-    );
-
+    const [modalOpened, controAuthlModal, controlEventModal] = useUnit ([
+        modalModel.$modalOpened,
+        // modalModel.$createEventModal,
+        modalModel.controAuthlModal,
+        modalModel.controlEventModal
+    ]);
+    // console.log(createEventModal);
     useEffect(() => {
         setMonthDays(getMonthDays(moment()));
     }, []);
@@ -83,8 +84,8 @@ function Header({setMonthDays, setModalOpened, token}) {
                             btnName='Войти'
                             disabled={false}
                             onClick = {() => {
-                                controlModal();
-                                setModalOpened(authModal.opened);
+                                controAuthlModal();
+                                openAuth(modalOpened.authlModal);
                             }}
                         />
                     :
@@ -93,7 +94,14 @@ function Header({setMonthDays, setModalOpened, token}) {
                                 btnClass={styles.addEventBtn}
                                 btnName={addEvent}
                                 disabled={false}
-                                // onClick = {}
+                                onClick = {
+                                    () => {
+                                        console.log(modalOpened.eventModal);
+                                        controlEventModal();
+                                        createEvent(modalOpened.eventModal);
+                                        console.log(modalOpened.eventModal);
+                                    }
+                                }
                             />
                             <div className={styles.userAvatar} style={{backgroundImage: `url(${'/user-head.png'})`}}></div>
                         </div>

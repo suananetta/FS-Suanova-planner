@@ -18,28 +18,57 @@ import ModalCreateEvent from '@/components/modalEvent/ModalCreateEvent'
 
 
 export default function Home() {
-  const authModal = useUnit(modalModel.$authModal);
+  const [modalOpened, controAuthlModal, controlEventModal] = useUnit ([
+    modalModel.$modalOpened,
+    // modalModel.$createEventModal,
+    modalModel.controAuthlModal,
+    modalModel.controlEventModal
+  ]);
+
   const userToken = useUnit(authModel.$userToken)
 
   let [monthDays, setMonthDays] = useState([]);
   let [token, setToken] = useState(userToken);
-  let [modalOpened, setModalOpened] = useState(authModal.opened);
-
+  let [authModalOpened, setAuthModalOpened] = useState(modalOpened.authlModal);
+  let [createEventModalOpened, setCreateEventModalOpened] = useState(modalOpened.eventModal);
   
-  console.log(token);
-  // console.log(modalOpened);
+  // console.log(token);
+  // console.log(createEventModalOpened);
   return (
     <>
-      <Header setMonthDays={setMonthDays} setModalOpened={setModalOpened} token={token}/>
+      <Header 
+        setMonthDays={setMonthDays} 
+        openAuth={setAuthModalOpened} 
+        createEvent={setCreateEventModalOpened} 
+        token={token}
+      />
       <main className={ttcomons.className}>
         <Calendar monthDays={monthDays}/>
         {
-          modalOpened?
-            <Modal content={<ModalAuth setModalOpened={setModalOpened} setToken={setToken}/>} setModalOpened={setModalOpened}/>
+          authModalOpened?
+            <Modal 
+              content={<ModalAuth setModalOpened={setAuthModalOpened} setToken={setToken}/>} 
+              onClick={() => {
+                controAuthlModal();
+                setAuthModalOpened(modalOpened.authlModal);
+              }}
+            />
             :
             <></>
         }
-        <Modal content={<ModalCreateEvent/>} setModalOpened={setModalOpened}/>
+        {
+          createEventModalOpened?
+            <Modal 
+                content={<ModalCreateEvent/>} 
+                onClick={() => {
+                    controlEventModal();
+                    setCreateEventModalOpened(modalOpened.eventModal);
+                  } 
+                }
+            />
+            :
+            <></>
+        }
       </main>
     </>
   )

@@ -6,6 +6,7 @@
     @include display-setting(column, flex-start, flex-start);
     h2 {
         align-self: center;
+        margin-top: 0;
         margin-bottom: 64px;
         @include font-setting(400, 36px, 100%);  
     }
@@ -53,7 +54,6 @@
             height: 107px;
         }
     }
-    
 }
 .eventInfoItem {
     position: relative;
@@ -69,7 +69,6 @@
             transform: translateY(-5px);
             @include font-setting(400, 14px, 100%);  
         }
-        
     }
     label {
         top: 0;
@@ -114,7 +113,6 @@
     input[type=time], input[type=text] {
         max-width: 346px;
     }
-    
 }
 .eventDates {
     margin-bottom: 32px;
@@ -131,13 +129,13 @@
                 background-color: transparent;
                 transform: translateY(-5px);
                 @include font-setting(400, 14px, 100%);  
-            }
-            
+            } 
         }
         label {
             top: 0;
             left: 7px;
             height: 15px;
+            width: 140px;
             background-color: $main-white;
             transform-origin: 0 0;
             @include font-setting(400, 20px, 110%);  
@@ -153,13 +151,13 @@
                 background-color: transparent;
                 transform: translateY(-5px);
                 @include font-setting(400, 14px, 100%);  
-            }
-            
+            } 
         }
         label {
             top: 0;
             left: 7px;
             height: 15px;
+            width: 140px;
             background-color: $main-white;
             transform-origin: 0 0;
             @include font-setting(400, 20px, 110%);  
@@ -184,7 +182,6 @@
             transform: translateY(-5px);
             @include font-setting(400, 14px, 100%);  
         }
-        
     }
     label {
         top: 0;
@@ -211,7 +208,6 @@
             transform: translateY(-5px);
             @include font-setting(400, 14px, 100%);  
         }
-        
     }
     label {
         top: 0;

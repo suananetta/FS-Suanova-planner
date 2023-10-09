@@ -1,42 +1,38 @@
 import { createEvent, createStore, sample } from "effector"
 
-const $authModal = createStore({
-    opened: false,
-    registration: false
+const $modalOpened = createStore({
+    authlModal: false,
+    eventModal: false
 });
 
-const controlModal = createEvent();
-const registerModal = createEvent();
+// const $createEventModal = createStore(false);
+
+const controAuthlModal = createEvent();
+const controlEventModal = createEvent();
 
 sample({
-    clock: controlModal,
-    source: $authModal,
+    clock: controAuthlModal,
+    source: $modalOpened,
     fn: (source) => {
-        source.opened = !source.opened;
+        source.authlModal = !source.authlModal;
     },
-    target: $authModal
+    target: $modalOpened
 })
 
 sample({
-    clock: registerModal,
-    source: $authModal,
-    fn: (source, payload) => {
-        source.registration = payload;
+    clock: controlEventModal,
+    source: $modalOpened,
+    fn: (source) => {
+        source.eventModal = !source.eventModal;
+        console.log(source);
     },
-    target: $authModal
+    target: $modalOpened
 })
 
-// sample({
-//     clock: closeModal,
-//     source: $authModal,
-//     fn: (source) => {
-//         source.opened = false;
-//     },
-//     target: $authModal
-// })
 
 export const model = {
-    $authModal,
-    controlModal,
-
+    $modalOpened,
+    // $createEventModal,
+    controAuthlModal,
+    controlEventModal
 }
