@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useUnit } from "effector-react"
 
 import moment from "moment"
@@ -25,13 +25,23 @@ export default function Home() {
     modalModel.controlEventModal
   ]);
 
-  const userToken = useUnit(authModel.$userToken)
+  const [userToken, getUserToken] = useUnit([
+    authModel.$userToken,
+    authModel.getUserToken
+  ])
 
   let [monthDays, setMonthDays] = useState([]);
   let [token, setToken] = useState(userToken);
   let [authModalOpened, setAuthModalOpened] = useState(modalOpened.authlModal);
   let [createEventModalOpened, setCreateEventModalOpened] = useState(modalOpened.eventModal);
   
+
+  useEffect(() => {
+    if(localStorage.getItem('token') !== null) {
+      setToken(localStorage.getItem('token'));
+      getUserToken(localStorage.getItem('token'));
+    }
+  }, [])
   // console.log(token);
   // console.log(createEventModalOpened);
   return (

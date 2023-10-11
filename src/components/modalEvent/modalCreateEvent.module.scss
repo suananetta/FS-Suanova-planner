@@ -10,11 +10,12 @@
         margin-bottom: 64px;
         @include font-setting(400, 36px, 100%);  
     }
-    input {
+    input, textarea{
         width: 548px;
         padding: 18px 16px;
         border-radius: 12px;
         border: 1px solid $main-gray;
+        resize: none;
     }
     input[type=file] {
         height: 170px;      
@@ -58,7 +59,7 @@
 .eventInfoItem {
     position: relative;
     margin-bottom: 32px;
-    input {
+    input, textarea {
         margin-top: 0;
         padding: 18px 16px; 
         &:focus {
@@ -70,6 +71,7 @@
             @include font-setting(400, 14px, 100%);  
         }
     }
+    
     label {
         top: 0;
         left: 7px;
@@ -80,18 +82,133 @@
         transform: translateY(10px);
     }
 }
-.selectInfoItem {
+.participatorsInfoItem {
     position: relative;
-    .selectLable {
-        top: 8px;
-        left: 7px;
-        @include font-setting(400, 20px, 110%);  
-    }
-    select {
-        &:focus~.selectLable {
-            transform: translateY(-5px);
-            @include font-setting(400, 14px, 100%);  
+    input {
+        height: 45px;
+        padding: 10px 16px; 
+        &:focus {
+            padding: 10px 16px; 
         }
+    }  
+    label {
+        top: 0;
+        left: 7px;
+        @include font-setting(400, 14px, 100%);  
+        transform: translateY(-3px);
+    }
+    
+}
+.eventParticipants {
+    z-index: 999;
+    position: absolute;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-top: 8px;
+    width: 344px;
+    height: max-content;
+    max-height: 240px;
+    padding: 8px 8px 12px;
+    background-color: $main-white;
+    border-radius: 12px;
+    border: 1px solid $main-gray;
+    scrollbar-width: none;
+    ::-webkit-scrollbar-thumb {
+        width: 3px;
+        height: 3px;
+    }
+    ::-webkit-scrollbar-button {
+        display: none;
+    }
+    ::-webkit-scrollbar {
+        width: 0;
+    }
+}
+.participantInfo {
+    width: 309px;
+    height: 40px;
+    padding: 8px;
+    border-radius: 12px;
+    @include display-setting(row, flex-start, center);
+    &:hover {
+        cursor: pointer;
+        background-color: $light-gray;
+        transition: 0.3s;
+    }
+    .participantImg {
+        width: 40px;
+        height: 40px;
+        margin-right: 12px;
+        border-radius: 40px;
+        background-color: $buttons-gray;
+        background-size: 150% 100%;
+        background-position: center;
+    }
+}
+.chosenParticipants {
+    position: absolute;
+    width: 540px;
+    height: 35px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    top: 23px;
+    left: 16px;
+    @include display-setting(row, flex-start, center);
+    flex-wrap: wrap;
+    scrollbar-width: none;
+    &::-webkit-scrollbar-button {
+        display: none;
+    }
+    &::-webkit-scrollbar {
+        width: 0;
+    }
+}
+.chosenParticipant {
+    margin-right: 8px;
+    margin-bottom: 8px;
+    position: relative;
+    width: max-content;
+    height: 30px;
+    padding-right: 12px;
+    border-radius: 30px;
+    background-color: $buttons-gray;
+    @include display-setting(row, flex-start, center);
+    .chosenParticipantImg {
+        width: 30px;
+        height: 30px;
+        margin-right: 4px;
+        border-radius: 30px;
+        background-color: $main-gray;
+        background-size: 150% 100%;
+        background-position: center;
+    }
+    button {
+        opacity: 0;
+    }
+    &:hover {
+        cursor: pointer;
+        button {
+            opacity: 1;
+        }
+    }
+    span {
+        margin-top: 4px;
+    }
+}
+.deleteParticipantBtn {
+    position: absolute;
+    right: 3px;
+    transition: opacity 800ms ease;
+    border-radius: 30px;
+    backdrop-filter: blur(3px);
+        -webkit-box-shadow: -10px 0px 13px -7px $main-white, 10px 0px 13px -7px $main-white, inset 40px 4px 22px 19px rgba($buttons-gray,0.67); 
+    box-shadow: -10px 0px 13px -7px $main-white, 10px 0px 13px -7px $main-white, inset 40px 4px 22px 19px rgba($buttons-gray,0.67);
+    @include display-setting(row, center, center);
+    &:hover {
+        cursor: pointer;
+    }
+    img {
+        z-index: -1;
     }
 }
 .filesInfoItem {

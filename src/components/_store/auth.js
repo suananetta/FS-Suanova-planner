@@ -1,7 +1,8 @@
 import { createEffect, createEvent, createStore, sample } from "effector"
-import { checkUserExistence, loginUser, registerUser, getUserInfo} from "../_axios/requests";
+import { checkUserExistence, loginUser, registerUser, getUserInfo, getAllUsers} from "../_axios/requests";
 
 const $userToken = createStore(null);
+const $userName = createStore('User');
 
 const checkUserFx = createEffect(async(email) => {
     let result = await checkUserExistence(email);
@@ -18,7 +19,20 @@ const registerUserFx = createEffect(async(userInfo) => {
     return result;
 });
 
+const getUserInfoFx = createEffect(async() => {
+    let result = await getUserInfo();
+    return result.data.username;
+});
+
+const getAllUsersFx = createEffect(async() => {
+    let result = await getAllUsers();
+    return result.data;
+});
+
 let getUserToken = createEvent();
+let getUserName = createEvent();
+
+$userName.on(getUserName, (_, payload) => payload)
 
 sample({
     clock: getUserToken,
@@ -29,10 +43,23 @@ sample({
     target: $userToken
 })
 
+// sample({
+//     clock: getUserName,
+//     source: $userName,
+//     fn: (source, payload) => {
+//         return payload;
+//     },
+//     target: $userName
+// })
+
 export const model = {
     $userToken,
+    $userName,
     checkUserFx,
     loginUserFx,
     registerUserFx,
-    getUserToken
+    getUserInfoFx,
+    getAllUsersFx,
+    getUserToken,
+    getUserName
 }

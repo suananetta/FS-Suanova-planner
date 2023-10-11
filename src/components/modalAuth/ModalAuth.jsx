@@ -12,15 +12,17 @@ import { model as authModel} from '../_store/auth'
 import { model as modalModel} from '../_store/modalControl'
 
 function ModalAuth({setModalOpened, setToken}) {
-    const [userToken, checkUser, loginUser, registerUser, getUserToken] = useUnit([
+    const [userToken, checkUser, loginUser, registerUser, getUserInfo, getUserToken, getUserName] = useUnit([
         authModel.$userToken,
         authModel.checkUserFx,
         authModel.loginUserFx,
         authModel.registerUserFx,
-        authModel.getUserToken
+        authModel.getUserInfoFx,
+        authModel.getUserToken,
+        authModel.getUserName
     ]
     );
-
+    
     const [modalOpened, controlModal] = useUnit ([
         modalModel.$modalOpened,
         modalModel.controAuthlModal,
@@ -65,6 +67,9 @@ function ModalAuth({setModalOpened, setToken}) {
 
         localStorage.setItem('token', token.data.jwt)
 
+        let name = await getUserInfo();
+        getUserName(name);
+
         if(token.status === 200) {
             controlModal();
             setModalOpened(modalOpened.authlModal);
@@ -80,6 +85,9 @@ function ModalAuth({setModalOpened, setToken}) {
 
         let result = await registerUser(userInfo);
         getUserToken(result.data.jwt);
+
+        let name = await getUserInfo();
+        getUserName(name);
 
         if(result.status === 200) {
             controlModal();

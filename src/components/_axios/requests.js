@@ -20,7 +20,7 @@ plannerApi.interceptors.request.use(config => {
 plannerApiLoged.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json';
     config.headers.Accept = 'application/json';
-    config.headers.Authorization = localStorage.getItem('token') != null? `Bearer ${JSON.parse(localStorage.getItem('token'))}` : '';
+    config.headers.Authorization = localStorage.getItem('token') !== null? `Bearer ${localStorage.getItem('token')}` : '';
     return config;
 });
 
@@ -38,6 +38,17 @@ export const registerUser = async (username, email, password) => {
 
 export const getUserInfo = async () => {
     return plannerApiLoged.get(`/users/me`)
+}
+export const getAllUsers = async () => {
+    return plannerApiLoged.get(`/users`)
+}
+
+export const uploadFile = async (file) => {
+    return plannerApiLoged.post(`/upload`, {file})
+}
+
+export const getFiles = async () => {
+    return plannerApiLoged.get(`/upload/files`)
 }
 
 export const getEventsForPublic = async () => {

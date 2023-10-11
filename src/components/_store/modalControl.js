@@ -5,8 +5,6 @@ const $modalOpened = createStore({
     eventModal: false
 });
 
-// const $createEventModal = createStore(false);
-
 const controAuthlModal = createEvent();
 const controlEventModal = createEvent();
 
@@ -24,7 +22,6 @@ sample({
     source: $modalOpened,
     fn: (source) => {
         source.eventModal = !source.eventModal;
-        console.log(source);
     },
     target: $modalOpened
 })
@@ -32,7 +29,6 @@ sample({
 
 export const model = {
     $modalOpened,
-    // $createEventModal,
     controAuthlModal,
     controlEventModal
 }

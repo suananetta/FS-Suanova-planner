@@ -12,6 +12,7 @@ import styles from './header.module.scss'
 import { model as monthModel } from '../_store/monthControl'
 import { model as modalModel } from '../_store/modalControl'
 import { model as  authModel} from '../_store/auth'
+import { getUserInfo, getAllUsers, getFiles} from '../_axios/requests'
 import { getMonthDays } from '../_utils/utils'
 import Button from '../_shared/button/Button'
 
@@ -25,7 +26,6 @@ function Header({setMonthDays, openAuth, createEvent, token}) {
 
     const [modalOpened, controAuthlModal, controlEventModal] = useUnit ([
         modalModel.$modalOpened,
-        // modalModel.$createEventModal,
         modalModel.controAuthlModal,
         modalModel.controlEventModal
     ]);
@@ -55,6 +55,18 @@ function Header({setMonthDays, openAuth, createEvent, token}) {
                         {currentMonth[0].toUpperCase() + currentMonth.slice(1) + ' '}
                         {currentDate.year() !== moment().year()? currentDate.year() : ''}
                     </span>
+
+                    <Button
+                        btnClass={styles.addEventBtn}
+                        btnName='test'
+                        disabled={false}
+                        onClick = {
+                            async () => {
+                               let res = await getFiles();
+                               console.log(res.data);
+                            }
+                        }
+                    />
                     
                     <Button
                         btnClass={styles.arrowBackBtn}
@@ -96,10 +108,8 @@ function Header({setMonthDays, openAuth, createEvent, token}) {
                                 disabled={false}
                                 onClick = {
                                     () => {
-                                        console.log(modalOpened.eventModal);
                                         controlEventModal();
                                         createEvent(modalOpened.eventModal);
-                                        console.log(modalOpened.eventModal);
                                     }
                                 }
                             />
