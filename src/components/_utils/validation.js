@@ -1,11 +1,17 @@
 import { uploadFile } from "../_axios/requests";
 
 export async function validateFile(e) {
-    let files = e.target.files;
+    let files;
     let error = {
         error: false,
         message: ''
     };
+
+    if(e.target.files) {
+        files = e.target.files;
+    } else {
+        files = e.dataTransfer.files;
+    }
 
     Array.from(files).forEach((file) => {
         if(file.size > 5000000) {
@@ -14,7 +20,6 @@ export async function validateFile(e) {
         } else {
             error.error = false;
             error.message = '';
-           
         }
     });
 

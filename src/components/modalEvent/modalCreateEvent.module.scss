@@ -71,7 +71,6 @@
             @include font-setting(400, 14px, 100%);  
         }
     }
-    
     label {
         top: 0;
         left: 7px;
@@ -97,7 +96,6 @@
         @include font-setting(400, 14px, 100%);  
         transform: translateY(-3px);
     }
-    
 }
 .eventParticipants {
     z-index: 999;
@@ -105,10 +103,10 @@
     overflow-y: scroll;
     overflow-x: hidden;
     margin-top: 8px;
+    padding: 8px 8px 12px;
     width: 344px;
     height: max-content;
     max-height: 240px;
-    padding: 8px 8px 12px;
     background-color: $main-white;
     border-radius: 12px;
     border: 1px solid $main-gray;
@@ -219,6 +217,7 @@
         left: 0;
         width: 65%;
         padding: 74px 113px;
+        text-align: center;
         text-wrap: nowrap;
         border: 1px dashed $main-gray;
         border-radius: 12px;

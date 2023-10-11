@@ -11,6 +11,7 @@ import { validateFile } from '../_utils/validation'
 import { uploadFile } from '../_axios/requests'
 import Button from '../_shared/button/Button'
 import ParticipantComponent from './participantComponent/participantComponent'
+import FileUploader from './fileUploader/FileUploader'
 
 function ModalCreateEvent({setModalOpened, setToken}) {
     const [userName, getAllUsersFx] = useUnit([
@@ -26,7 +27,7 @@ function ModalCreateEvent({setModalOpened, setToken}) {
     let [eventLocation, setEventLocation] = useState('');
 
     let [showUsersList, setShowUsersList] = useState(false);
-    let [drag, setDrag] = useState(false)
+    // let [drag, setDrag] = useState(false)
 
     let [errorFile, setErroeFile] = useState('')
 
@@ -37,23 +38,6 @@ function ModalCreateEvent({setModalOpened, setToken}) {
 
     console.log(allUsers);
     console.log(eventParticipants);
-
-    let uploadPhotos = async(e) => {
-        let error = validateFile(e);
-        let files = [...e.target.files];
-        let formData = new FormData();
-
-        if(!error.error) {
-            formData.append('photos', files[0]);
-            console.log(formData);
-            console.log(files);
-            let res = await uploadFile(formData);
-            console.log(res);
-        } else {
-            setErroeFile(error)
-        }
-    
-    }
 
     useEffect(() => {
         getUsersArray()
@@ -76,22 +60,26 @@ function ModalCreateEvent({setModalOpened, setToken}) {
         setEventParticipants(eventParticipants.filter((user) => user.id !== +e.target.dataset.id))
     }
 
-    let dragHandler = (e) => {
-        e.preventDefault();
-        setDrag(true);
-    }
+    let uploadPhotos = async(e) => {
+        let error = validateFile(e);
+        let files; 
+        let formData = new FormData();
 
-    let dragLeaveHandler = (e) => {
-        e.preventDefault();
-        setDrag(false);
-    }
+        if(e.target.files) {
+            files = [...e.target.files];
+        } else {
+            files = [...e.dataTransfer.files];
+        }
 
-    let dropHandler = (e) => {
-        e.preventDefault();
-        console.log(e);
-        let files = [...e.dataTransfer.files];
-        console.log(files);
-        setDrag(false);
+        if(!error.error) {
+            formData.append('photos', files[0]);
+            console.log(formData);
+            console.log(files);
+            let res = await uploadFile(formData);
+            console.log(res);
+        } else {
+            setErroeFile(error)
+        }
     }
 
     let required = <span className={styles.required}>*</span>
@@ -160,32 +148,8 @@ function ModalCreateEvent({setModalOpened, setToken}) {
                                 <></>
                         }
                     </div>
-
-                    <div className={styles.filesInfoItem}>
-                        <input 
-                            className={styles.eventFiles} 
-                            type='file' 
-                            accept=".jpg,.jpeg,.png" 
-                            id='eventFiles' 
-                            onClick={e => console.log(e.target)} 
-                            onDragStart={(e) => {dragHandler(e)}}
-                            onDragOver={(e) => {dragHandler(e)}}
-                            onDragLeave={(e) => {dragLeaveHandler(e)}}
-                            onDrop={(e) => {dropHandler(e)}}
-                            onChange={(e) =>{
-                                uploadPhotos(e);
-                            }}
-                            multiple
-                        />
-                        <label className={styles.eventFilesLable} htmlFor='eventFiles'>
-                            {
-                                drag?
-                                    'Отпустите файлы для загрузки'
-                                    :
-                                    'Выберите фото или перетащите сюда'
-                            }
-                        </label>
-                    </div>
+                    
+                    <FileUploader onChange={() => {}}/>
                 </div>
 
                 <div className={styles.eventOrgInfo}>
