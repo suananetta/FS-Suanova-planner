@@ -1,12 +1,10 @@
 'use client'
-import { useState } from 'react';
-import Image from 'next/image'
+
+import { useState } from 'react'
+
 import styles from '../modalCreateEvent.module.scss'
 
-import Button from '@/components/_shared/button/Button';
-
-
-function FileUploader({onChange}) {
+function FileUploader({addPhotos, errors}) {
 
     let [drag, setDrag] = useState(false);
 
@@ -22,36 +20,53 @@ function FileUploader({onChange}) {
 
     let dropHandler = (e) => {
         e.preventDefault();
-        console.log(e);
-        let files = [...e.dataTransfer.files];
-        console.log(files);
         setDrag(false);
+        let files = [...e.dataTransfer.files];
+        addPhotos(files);
+    }
+
+    let onChangeHandler = (e) => {
+        let files = [...e.target.files];
+        addPhotos(files);
     }
 
     return (
-        <div className={styles.filesInfoItem}>
-            <input 
-                accept='.jpg,.jpeg,.png '
-                className={styles.eventFiles} 
-                type='file' 
-                id='eventFiles' 
-                onClick={e => console.log(e.target)} 
-                onDragStart={(e) => {dragHandler(e)}}
-                onDragOver={(e) => {dragHandler(e)}}
-                onDragLeave={(e) => {dragLeaveHandler(e)}}
-                onDrop={(e) => {dropHandler(e)}}
-                onChange={onChange}
-                multiple
-            />
-            <label className={styles.eventFilesLable} htmlFor='eventFiles'>
-                {
-                    drag?
-                        'Отпустите файлы для загрузки'
+        <>
+            <div className={styles.filesInfoItem}>
+                <input 
+                    accept='.jpg,.jpeg,.png '
+                    className={styles.eventFiles} 
+                    type='file' 
+                    id='eventFiles' 
+                    onDragStart={(e) => {dragHandler(e)}}
+                    onDragOver={(e) => {dragHandler(e)}}
+                    onDragLeave={(e) => {dragLeaveHandler(e)}}
+                    onDrop={(e) => {dropHandler(e)}}
+                    onChange={(e) => {onChangeHandler(e)}}
+                    multiple
+                />
+                <label className={styles.eventFilesLable} htmlFor='eventFiles'>
+                    {
+                        drag?
+                            'Отпустите файлы для загрузки'
                         :
-                        'Выберите фото или перетащите сюда'
+                            'Выберите фото или перетащите сюда'
+                    }
+                </label>
+            </div>
+            <div className={styles.eventFileError}>
+                {
+                    errors.length > 0?
+                    errors.map((error) => {
+                        return (
+                            <span key={error.fileName}>{error.message}</span>
+                        )
+                    })
+                    :
+                    <></>
                 }
-            </label>
-        </div>
+            </div>
+        </>
     )
 }
 

@@ -1,29 +1,20 @@
 import { uploadFile } from "../_axios/requests";
 
-export async function validateFile(e) {
-    let files;
-    let error = {
-        error: false,
-        message: ''
-    };
-
-    if(e.target.files) {
-        files = e.target.files;
-    } else {
-        files = e.dataTransfer.files;
-    }
-
+export function validateFile(files) {
+    let errors = []
+    
     Array.from(files).forEach((file) => {
         if(file.size > 5000000) {
-            error.error = true;
-            error.message = 'Размер фото не может превышать 5Мб';
-        } else {
-            error.error = false;
-            error.message = '';
-        }
+            let fileError = {
+                error: true,
+                message: `Размер '${file.name}' превышает 5Мб`,
+                fileName: file.name
+            }
+            errors.push(fileError);
+        } 
     });
 
-    return error;
+    return errors;
 }
 
 

@@ -12,6 +12,10 @@ const plannerApiLoged = axios.create({
     baseURL: BASE_URL,
 })
 
+const plannerApiFiles = axios.create({
+    baseURL: BASE_URL,
+})
+
 plannerApi.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json';
     return config;
@@ -19,6 +23,13 @@ plannerApi.interceptors.request.use(config => {
 
 plannerApiLoged.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json';
+    config.headers.Accept = 'application/json';
+    config.headers.Authorization = localStorage.getItem('token') !== null? `Bearer ${localStorage.getItem('token')}` : '';
+    return config;
+});
+
+plannerApiFiles.interceptors.request.use(config => {
+    config.headers['Content-Type'] = 'multipart/form-data';
     config.headers.Accept = 'application/json';
     config.headers.Authorization = localStorage.getItem('token') !== null? `Bearer ${localStorage.getItem('token')}` : '';
     return config;
@@ -43,8 +54,8 @@ export const getAllUsers = async () => {
     return plannerApiLoged.get(`/users`)
 }
 
-export const uploadFile = async (file) => {
-    return plannerApiLoged.post(`/upload`, {file})
+export const uploadFile = async (files) => {
+    return plannerApiFiles.post(`/upload`, {files})
 }
 
 export const getFiles = async () => {

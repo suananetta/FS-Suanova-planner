@@ -50,10 +50,8 @@
 .eventDescriptionInfo {
     width: 580px;
     margin-right: 22px;
-    :nth-child(2) {
-        input {
-            height: 107px;
-        }
+    textarea {
+        height: 107px;
     }
 }
 .eventInfoItem {
@@ -225,10 +223,43 @@
         @include font-setting(400, 20px, 110%);  
     }
 }
+.eventFileError {
+    color: $main-accent;
+    text-align: center;
+}
 .eventOrgInfo {
     input[type=time], input[type=text] {
         max-width: 346px;
     }
+}
+.eventPhotos {
+    margin-top: 40px;
+    margin-left: 23px;
+    width: 279px;
+    @include display-setting(row, space-between, flex-start);
+    flex-wrap: wrap;
+    img {
+        border-radius: 12px;
+        &:nth-child(1), &:nth-child(2) {
+            margin-bottom: 12px;
+        }
+    }
+}
+.eventPhotoPreview {
+    position: relative;
+    button {
+        opacity: 1;
+    }
+}
+.deletePhotoBtn {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    right: 5px;
+    top: 5px;
+    background-image: url('../../../public/delete-photo.svg');
+    background-size: contain;
+    background-position: center;
 }
 .eventDates {
     margin-bottom: 32px;
