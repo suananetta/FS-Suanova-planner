@@ -21,24 +21,24 @@
         height: 170px;      
         opacity: 0;
     }
+    // input[type=date]::-webkit-calendar-picker-indicator {
+    //     opacity: 0;
+    // }
+    // input[type=date]{
+    //     background: url('../../../public/input-calendar.svg') $main-white no-repeat 90% 50%;
+    // }
     label {
         position: absolute;
         height: 37px;
         padding: 10px;
         pointer-events: none;
         color: $main-gray;
-    }
-    select {
-        min-width: 101%;
-        margin-bottom: 32px;
-        padding: 18px 16px;
-        border-radius: 12px;
-        border: 1px solid $main-gray;
-        background-color: transparent;
-        box-sizing: border-box;
-            -moz-appearance: none;
-            -webkit-appearance: none;
-        appearance: none;
+        @include font-setting(400, 20px, 110%);  
+        letter-spacing: -0.4px;
+        transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+        opacity: 1;
+        transform-origin: 0 0;
+        transform: translateY(10px);
     }
 }
 .eventForm {
@@ -72,11 +72,12 @@
     label {
         top: 0;
         left: 7px;
-        transform-origin: 0 0;
-        @include font-setting(400, 20px, 110%);  
-        transition: opacity .15s ease-in-out, transform .15s ease-in-out;
-        opacity: 1;
-        transform: translateY(10px);
+        // transform-origin: 0 0;
+        // @include font-setting(400, 20px, 110%);
+        // letter-spacing: -0.4px;  
+        // transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+        // opacity: 1;
+        // transform: translateY(10px);
     }
 }
 .participatorsInfoItem {
@@ -124,7 +125,7 @@
     width: 309px;
     height: 40px;
     padding: 8px;
-    border-radius: 12px;
+    // border-radius: 12px;
     @include display-setting(row, flex-start, center);
     &:hover {
         cursor: pointer;
@@ -219,13 +220,14 @@
         text-wrap: nowrap;
         border: 1px dashed $main-gray;
         border-radius: 12px;
-        transform-origin: 0 0;
-        @include font-setting(400, 20px, 110%);  
+        // transform-origin: 0 0;
+        // @include font-setting(400, 20px, 110%);  
     }
 }
 .eventFileError {
     color: $main-accent;
     text-align: center;
+    @include display-setting(column, center, center);
 }
 .eventOrgInfo {
     input[type=time], input[type=text] {
@@ -262,56 +264,84 @@
     background-position: center;
 }
 .eventDates {
+    position: relative;
     margin-bottom: 32px;
-    input[type=date] {
+    @include display-setting(row, space-between, baseline);
+//     .startDate {
+//         position: relative;
+//         input {
+//             &:focus~.labelStartDate {
+//                 background-color: transparent;
+//                 transform: translateY(-5px);
+//                 @include font-setting(400, 14px, 100%);  
+//             } 
+//         }
+//         label {
+//             top: 0;
+//             left: 7px;
+//             height: 15px;
+//             width: 140px;
+//             background-color: $main-white;
+//             // transform-origin: 0 0;
+//             // @include font-setting(400, 20px, 110%);  
+//             // transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+//             // opacity: 1;
+//             // transform: translateY(10px);
+//         }
+//     }
+//     .endDate {
+//         position: relative;
+//         input {
+
+//             &:focus~.labelEndDate {
+//                 background-color: transparent;
+//                 transform: translateY(-5px);
+//                 @include font-setting(400, 14px, 100%);  
+//             } 
+//         }
+//         label {
+//             top: 0;
+//             left: 7px;
+//             height: 15px;
+//             width: 140px;
+//             background-color: $main-white;
+//             // transform-origin: 0 0;
+//             // @include font-setting(400, 20px, 110%);  
+//             // transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+//             // opacity: 1;
+//             // transform: translateY(10px);
+//         }
+//     }
+}
+.eventDate {
+    position: relative;
+    input {
+        cursor: pointer;
         padding: 10px 16px;
         width: 149px;
         height: 33px;
-    }
-    @include display-setting(row, space-between, baseline);
-    .startDate {
-        position: relative;
-        input {
-            &:focus~.labelStartDate {
-                background-color: transparent;
-                transform: translateY(-5px);
-                @include font-setting(400, 14px, 100%);  
-            } 
+        background: url('../../../public/input-calendar.svg') $main-white no-repeat 90% 50%;
+        &::placeholder {
+            color: transparent;
+            @include font-setting(400, 14px, 100%);
         }
-        label {
-            top: 0;
-            left: 7px;
-            height: 15px;
-            width: 140px;
-            background-color: $main-white;
-            transform-origin: 0 0;
-            @include font-setting(400, 20px, 110%);  
-            transition: opacity .15s ease-in-out, transform .15s ease-in-out;
-            opacity: 1;
-            transform: translateY(10px);
+        &:focus {
+            &::placeholder {
+                color: $dark-gray;
+            }
+        }
+        &:focus~.labelStartDate {
+            transform: translateY(-5px);
+            @include font-setting(400, 14px, 100%);  
+        }
+        &:focus~.labelEndDate {
+            transform: translateY(-5px);
+            @include font-setting(400, 14px, 100%);  
         }
     }
-    .endDate {
-        position: relative;
-        input {
-            &:focus~.labelEndDate {
-                background-color: transparent;
-                transform: translateY(-5px);
-                @include font-setting(400, 14px, 100%);  
-            } 
-        }
-        label {
-            top: 0;
-            left: 7px;
-            height: 15px;
-            width: 140px;
-            background-color: $main-white;
-            transform-origin: 0 0;
-            @include font-setting(400, 20px, 110%);  
-            transition: opacity .15s ease-in-out, transform .15s ease-in-out;
-            opacity: 1;
-            transform: translateY(10px);
-        }
+    label {
+        top: 0;
+        left: 7px;
     }
 }
 .eventTime {
@@ -335,11 +365,11 @@
         left: 7px;
         height: 15px;
         background-color: $main-white;
-        transform-origin: 0 0;
-        @include font-setting(400, 20px, 110%);  
-        transition: opacity .15s ease-in-out, transform .15s ease-in-out;
-        opacity: 1;
-        transform: translateY(10px);
+        // transform-origin: 0 0;
+        // @include font-setting(400, 20px, 110%);  
+        // transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+        // opacity: 1;
+        // transform: translateY(10px);
     }
 }
 .eventLocation {
@@ -359,11 +389,11 @@
     label {
         top: 0;
         left: 7px;
-        transform-origin: 0 0;
-        @include font-setting(400, 20px, 110%);  
-        transition: opacity .15s ease-in-out, transform .15s ease-in-out;
-        opacity: 1;
-        transform: translateY(10px);
+        // transform-origin: 0 0;
+        // @include font-setting(400, 20px, 110%);  
+        // transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+        // opacity: 1;
+        // transform: translateY(10px);
     }
 }
 .eventInitiator {

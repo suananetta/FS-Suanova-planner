@@ -5,7 +5,6 @@ import { useState } from 'react'
 import styles from '../modalCreateEvent.module.scss'
 
 function FileUploader({addPhotos, errors}) {
-
     let [drag, setDrag] = useState(false);
 
     let dragHandler = (e) => {

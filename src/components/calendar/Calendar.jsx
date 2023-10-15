@@ -1,17 +1,13 @@
 'use client'
 
-import { redcollar } from '@/app/fonts'
-
 import { useUnit } from "effector-react"
 import moment from "moment"
 import "moment/locale/ru"
 
+import { redcollar } from '@/app/fonts'
 import styles from './calendar.module.scss'
 
 import { model as monthModel } from '../_store/monthControl'
-import Link from "next/link"
-import Image from "next/image"
-import { useEffect, useState } from 'react'
 
 function Calendar({monthDays}) {
     const currentDate = useUnit(monthModel.$currentDate);

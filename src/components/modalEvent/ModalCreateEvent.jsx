@@ -13,6 +13,8 @@ import { uploadFile } from '../_axios/requests'
 import Button from '../_shared/button/Button'
 import ParticipantComponent from './participantComponent/participantComponent'
 import FileUploader from './fileUploader/FileUploader'
+import FileUploaderPreview from './fileUploader/FileUploaderPreview'
+import MiniCalendar from './miniCalendar/MiniCalendar'
 
 function ModalCreateEvent({setModalOpened, setToken}) {
     const [userName, getAllUsersFx] = useUnit([
@@ -27,13 +29,12 @@ function ModalCreateEvent({setModalOpened, setToken}) {
     let [eventParticipants, setEventParticipants] = useState([]);
     let [eventLocation, setEventLocation] = useState('');
     let [eventPhotos, setEventPhotos] = useState([]);
-    let [eventPhotosPreview, setEventPhotosPreview] = useState([]);
-    console.log(eventPhotosPreview);
-    console.log(eventPhotos);
+    // console.log(eventPhotos);
     let [showUsersList, setShowUsersList] = useState(false);
+    let [showCalendar, setShowCalendar] = useState(false);
     // let [drag, setDrag] = useState(false)
 
-    let [errorFile, setErroeFile] = useState('')
+    let [errorFile, setErrorFile] = useState('')
 
     let getUsersArray = async() => {
         let res = await getAllUsersFx();
@@ -64,51 +65,36 @@ function ModalCreateEvent({setModalOpened, setToken}) {
         setEventParticipants(eventParticipants.filter((user) => user.id !== +e.target.dataset.id))
     }
 
-    let addPhotos = async(files) => {
-        let formData = new FormData();
+    let addPhotos = (files) => {
+        // let formData = new FormData();
         let errors = validateFile(files);
-        console.log(errors);
 
-        Array.from(files).forEach((file) => {
+        Array.from(files).map((file) => {
             if(errors.length > 0) {
-                errors.forEach((error) => {
-                    if(file.name !== error.fileName) {
-                        // setEventPhotos([...eventPhotos, file]);
-                        formData.append('files', file);
-                    }
+                errors.map((error) => {
+                    setEventPhotos([...eventPhotos, ...files.filter((file) => file.name !== error.fileName)]);
                 })
             } else {
-                formData.append('files', file);
-                let preview = {
-                    url: URL.createObjectURL(file),
-                    alt: file.name
-                }
-                console.log(URL.createObjectURL(file));
-                setEventPhotosPreview([...eventPhotosPreview, preview]);
+                // formData.append('files', file);
+                setEventPhotos([...eventPhotos, ...files]);
             }            
         })
 
-        setErroeFile(errors);
+        setErrorFile(errors);
 
-        formData.getAll('files').forEach((file) => {
-            uploadFile(file).then(res => setEventPhotos([...eventPhotos, ...res.data]));           
-        });
+        // formData.getAll('files').forEach((file) => {
+        //     uploadFile(file).then(res => setEventPhotos([...eventPhotos, ...res.data]));           
+        // });
     }
 
-    let removePhoto = (e) => {
-        let arr = eventPhotos.filter((photo) => {photo.name !== e.target.dataset.id});
-
+    let removePhoto = (e) => {   
+        let arr = [...eventPhotos.filter((photo) => photo.name !== e.target.dataset.id)];
         setEventPhotos(arr);
-        setEventPhotosPreview(eventPhotosPreview.filter((preview) => preview.alt !== e.target.dataset.id))
-
-        console.log(arr);
     }
 
     let required = <span className={styles.required}>*</span>
-    let deletePhotoBtn = <Image src="/delete-photo.svg" width={24} height={24} alt="information" />;
 
     return (
-        
         <div className={styles.modalCreateEvent}>
 
             <h2 className={redcollar.className}>Создание события</h2>
@@ -178,14 +164,20 @@ function ModalCreateEvent({setModalOpened, setToken}) {
                 <div className={styles.eventOrgInfo}>
 
                     <div className={styles.eventDates}>
-                        <div className={styles.startDate}>
-                            <input className={styles.eventName} type='date' id='startDate' required/>
+                        <div className={styles.eventDate}>
+                            <input className={styles.startDate} type='text' id='startDate' placeholder='дд-мм-гггг' required readOnly onClick={e => setShowCalendar(!showCalendar)}/>
                             <label className={styles.labelStartDate} htmlFor='startDate'>Начало{required}</label>
                         </div>
-                        <div className={styles.endDate}>
-                            <input className={styles.eventName} type='date' id='endDate'/>
+                        <div className={styles.eventDate}>
+                            <input className={styles.endDate} type='text' id='endDate' placeholder='дд-мм-гггг' readOnly onClick={e => setShowCalendar(!showCalendar)}/>
                             <label className={styles.labelEndDate} htmlFor='endDate'>Конец</label>
                         </div>
+                        {
+                            showCalendar?
+                                <MiniCalendar/>
+                            :
+                            <></>
+                        }
                     </div>
 
                     <div className={styles.eventTime}>
@@ -207,24 +199,7 @@ function ModalCreateEvent({setModalOpened, setToken}) {
                     </div>
 
                     <div className={styles.eventPhotos}>
-                        {
-                            eventPhotosPreview.length > 0? 
-                            eventPhotosPreview.slice(0, 4).map((photo) => {
-                                return (
-                                    <div className={styles.eventPhotoPreview} key={photo.alt}>
-                                        <Image src={photo.url} width={134} height={81} alt={photo.alt} />
-                                        <Button
-                                            btnClass={styles.deletePhotoBtn}
-                                            btnName={''}
-                                            data={photo.alt}
-                                            onClick={(e) => {removePhoto(e)}}
-                                        />
-                                    </div>
-                                )
-                            })
-                            :
-                            <></>
-                        }
+                        <FileUploaderPreview arr={eventPhotos} removePhoto={removePhoto}/>
                     </div>
                 </div>
 

@@ -1,10 +1,11 @@
 'use client'
+
 import Image from 'next/image'
 import styles from '../modalCreateEvent.module.scss'
 
-import Button from '@/components/_shared/button/Button';
+import Button from '@/components/_shared/button/Button'
 
-function ParticipantComponent({arr, setArr, chosen, add, remove}) {
+function ParticipantComponent({arr, chosen, add, remove}) {
 
     let removeParticipant = <Image src="/delete-participant.svg" width={24} height={24} alt="information" />; 
 
@@ -29,23 +30,15 @@ function ParticipantComponent({arr, setArr, chosen, add, remove}) {
 
                             {
                                 chosen?
-                                <Button
-                                    btnClass={styles.deleteParticipantBtn}
-                                    btnName={removeParticipant}
-                                    data={user.id}
-                                    onClick={remove}
-                                />
-                                    // <div
-                                    //     className={styles.deleteParticipantBtn}
-                                    //     data-id={user.id}
-                                    //     onClick={e=>console.log(e.target.dataset.id)}
-                                    // >
-                                    //     {removeParticipant}
-                                    // </div>
+                                    <Button
+                                        btnClass={styles.deleteParticipantBtn}
+                                        btnName={removeParticipant}
+                                        data={user.id}
+                                        onClick={remove}
+                                    />
                                     :
                                     <></>
                             }
-                            
                         </div>
                     )
                 })

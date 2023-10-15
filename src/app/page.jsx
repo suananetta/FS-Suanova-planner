@@ -14,6 +14,7 @@ import Calendar from '@/components/calendar/Calendar'
 import Modal from '@/components/_shared/modal/Modal'
 import ModalAuth from '@/components/modalAuth/modalAuth'
 import ModalCreateEvent from '@/components/modalEvent/ModalCreateEvent'
+import MiniCalendar from '@/components/modalEvent/miniCalendar/MiniCalendar'
 
 
 
