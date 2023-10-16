@@ -9,20 +9,20 @@ import Image from 'next/image'
 
 import styles from './header.module.scss'
 
-import { model as monthModel } from '../_store/monthControl'
+import { model as dateModel } from '../_store/dateControl'
 import { model as modalModel } from '../_store/modalControl'
 import { model as  authModel} from '../_store/auth'
-import { getUserInfo, getAllUsers, getFiles} from '../_axios/requests'
+
+import { getUserInfo, getAllUsers, getFiles, getEventsForPublic} from '../_axios/requests'
 import { getMonthDays } from '../_utils/utils'
 import Button from '../_shared/button/Button'
 
 function Header({setMonthDays, openAuth, createEvent, token}) {
     const [currentDate, prevMonth, nextMonth] = useUnit([
-        monthModel.$currentDate,
-        monthModel.prevMonth,
-        monthModel.nextMonth,
-    ]
-    );
+        dateModel.$currentDate,
+        dateModel.prevMonth,
+        dateModel.nextMonth,
+    ]);
 
     const [modalOpened, controAuthlModal, controlEventModal] = useUnit ([
         modalModel.$modalOpened,
@@ -62,8 +62,8 @@ function Header({setMonthDays, openAuth, createEvent, token}) {
                         disabled={false}
                         onClick = {
                             async () => {
-                               let res = await getFiles();
-                               console.log(res.data);
+                               let res = await getEventsForPublic();
+                               console.log(res.data.data);
                             }
                         }
                     />

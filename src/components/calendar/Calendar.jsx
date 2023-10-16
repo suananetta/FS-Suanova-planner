@@ -1,17 +1,18 @@
 'use client'
 
 import { useUnit } from "effector-react"
+
 import moment from "moment"
 import "moment/locale/ru"
 
 import { redcollar } from '@/app/fonts'
 import styles from './calendar.module.scss'
 
-import { model as monthModel } from '../_store/monthControl'
+import { model as monthModel } from '../_store/dateControl'
+import { weekDays, colors } from "../_utils/utils"
 
 function Calendar({monthDays}) {
     const currentDate = useUnit(monthModel.$currentDate);
-    const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
     return (
         <div className={redcollar.className}>
@@ -33,9 +34,9 @@ function Calendar({monthDays}) {
                         let currentMonth = currentDate.month();
 
                         if(day.month() !== currentMonth) {
-                            color = '#A4A4A4';
+                            color = colors.darkGray;
                         } else {
-                            color = '#000';
+                            color = colors.mainBlack;
                         }
 
                         return (

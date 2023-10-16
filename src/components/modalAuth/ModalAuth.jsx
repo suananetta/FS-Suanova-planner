@@ -12,16 +12,14 @@ import { model as authModel} from '../_store/auth'
 import { model as modalModel} from '../_store/modalControl'
 
 function ModalAuth({setModalOpened, setToken}) {
-    const [userToken, checkUser, loginUser, registerUser, getUserInfo, getUserToken, getUserName] = useUnit([
-        authModel.$userToken,
+    const [checkUser, loginUser, registerUser, getUserInfo, getUserToken, getUserName] = useUnit([
         authModel.checkUserFx,
         authModel.loginUserFx,
         authModel.registerUserFx,
         authModel.getUserInfoFx,
         authModel.getUserToken,
         authModel.getUserName
-    ]
-    );
+    ]);
     
     const [modalOpened, controlModal] = useUnit ([
         modalModel.$modalOpened,

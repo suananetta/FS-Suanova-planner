@@ -62,6 +62,10 @@ export const getFiles = async () => {
     return plannerApiLoged.get(`/upload/files`)
 }
 
+export const createNewEvent = async (eventData) => {
+    return plannerApiLoged.post(`/events`, eventData)
+}
+
 export const getEventsForPublic = async () => {
     return plannerApi.get('/events?populate=*&filter[date][$gte]=2022-10-14T14:00:00.000Z&filter[date][$lte]=2024-10-14T14:00:00.000Z')
 }

@@ -7,26 +7,30 @@
     h2 {
         align-self: center;
         margin-top: 0;
-        margin-bottom: 64px;
+        margin-bottom: 44px;
         @include font-setting(400, 36px, 100%);  
+        letter-spacing: -0.72px;
     }
     input, textarea{
         width: 548px;
-        padding: 18px 16px;
+        padding: 27px 16px;
         border-radius: 12px;
         border: 1px solid $main-gray;
         resize: none;
+        scrollbar-width: none;
+        @include font-setting(400, 16px, 110%);  
     }
     input[type=file] {
-        height: 170px;      
+        padding: 0;
+        height: 170px;
+        width: 582px;      
         opacity: 0;
     }
-    // input[type=date]::-webkit-calendar-picker-indicator {
-    //     opacity: 0;
-    // }
-    // input[type=date]{
-    //     background: url('../../../public/input-calendar.svg') $main-white no-repeat 90% 50%;
-    // }
+    input[type=time] {
+        &::placeholder {
+            display: none;
+        }
+    }
     label {
         position: absolute;
         height: 37px;
@@ -35,14 +39,14 @@
         color: $main-gray;
         @include font-setting(400, 20px, 110%);  
         letter-spacing: -0.4px;
-        transition: opacity .15s ease-in-out, transform .15s ease-in-out;
         opacity: 1;
+        transition: opacity .15s ease-in-out, transform .15s ease-in-out;
         transform-origin: 0 0;
         transform: translateY(10px);
     }
 }
 .eventForm {
-    @include display-setting(row, space-between, baseline);
+    @include display-setting(row, space-between, flex-start);
 }
 .required {
     color: $main-accent;
@@ -57,38 +61,32 @@
 .eventInfoItem {
     position: relative;
     margin-bottom: 32px;
+    input#eventPartisipants { 
+        height: 22px;
+    }
     input, textarea {
         margin-top: 0;
-        padding: 18px 16px; 
-        &:focus {
+        padding: 27px 16px 18px; 
+        &::placeholder {
+            color: transparent;
+        }
+        &:focus, &:not(:placeholder-shown) {
             padding-top: 27px;
             padding-bottom: 11px;
+            scrollbar-width: thin;
         }
-        &:focus~.eventLable {
-            transform: translateY(-5px);
-            @include font-setting(400, 14px, 100%);  
+        &:focus~.eventLable, &:not(:placeholder-shown)~.eventLable {
+            transform: translateY(-3px);
+            @include font-setting(400, 16px, 110%); 
         }
     }
     label {
-        top: 0;
+        top: 3px;
         left: 7px;
-        // transform-origin: 0 0;
-        // @include font-setting(400, 20px, 110%);
-        // letter-spacing: -0.4px;  
-        // transition: opacity .15s ease-in-out, transform .15s ease-in-out;
-        // opacity: 1;
-        // transform: translateY(10px);
     }
 }
-.participatorsInfoItem {
+.participantsInfoItem {
     position: relative;
-    input {
-        height: 45px;
-        padding: 10px 16px; 
-        &:focus {
-            padding: 10px 16px; 
-        }
-    }  
     label {
         top: 0;
         left: 7px;
@@ -145,14 +143,14 @@
 .chosenParticipants {
     position: absolute;
     width: 540px;
-    height: 35px;
+    height: 30px;
     overflow-y: scroll;
     overflow-x: hidden;
     top: 23px;
     left: 16px;
     @include display-setting(row, flex-start, center);
     flex-wrap: wrap;
-    scrollbar-width: none;
+    scrollbar-width: thin;
     &::-webkit-scrollbar-button {
         display: none;
     }
@@ -212,10 +210,10 @@
     position: relative;
     width: 548px;
     label {
-        top: 0;
+        top: -4px;
         left: 0;
         width: 65%;
-        padding: 74px 113px;
+        padding: 64px 113px;
         text-align: center;
         text-wrap: nowrap;
         border: 1px dashed $main-gray;
@@ -267,76 +265,31 @@
     position: relative;
     margin-bottom: 32px;
     @include display-setting(row, space-between, baseline);
-//     .startDate {
-//         position: relative;
-//         input {
-//             &:focus~.labelStartDate {
-//                 background-color: transparent;
-//                 transform: translateY(-5px);
-//                 @include font-setting(400, 14px, 100%);  
-//             } 
-//         }
-//         label {
-//             top: 0;
-//             left: 7px;
-//             height: 15px;
-//             width: 140px;
-//             background-color: $main-white;
-//             // transform-origin: 0 0;
-//             // @include font-setting(400, 20px, 110%);  
-//             // transition: opacity .15s ease-in-out, transform .15s ease-in-out;
-//             // opacity: 1;
-//             // transform: translateY(10px);
-//         }
-//     }
-//     .endDate {
-//         position: relative;
-//         input {
-
-//             &:focus~.labelEndDate {
-//                 background-color: transparent;
-//                 transform: translateY(-5px);
-//                 @include font-setting(400, 14px, 100%);  
-//             } 
-//         }
-//         label {
-//             top: 0;
-//             left: 7px;
-//             height: 15px;
-//             width: 140px;
-//             background-color: $main-white;
-//             // transform-origin: 0 0;
-//             // @include font-setting(400, 20px, 110%);  
-//             // transition: opacity .15s ease-in-out, transform .15s ease-in-out;
-//             // opacity: 1;
-//             // transform: translateY(10px);
-//         }
-//     }
 }
 .eventDate {
     position: relative;
     input {
         cursor: pointer;
-        padding: 10px 16px;
+        padding: 15px 16px 9px;
         width: 149px;
         height: 33px;
         background: url('../../../public/input-calendar.svg') $main-white no-repeat 90% 50%;
         &::placeholder {
             color: transparent;
-            @include font-setting(400, 14px, 100%);
+            @include font-setting(400, 16px, 110%);
         }
-        &:focus {
+        &:focus, &:not(:placeholder-shown) {
             &::placeholder {
-                color: $dark-gray;
+                color: $main-black;
             }
         }
-        &:focus~.labelStartDate {
+        &:focus~.labelStartDate, &:not(:placeholder-shown)~.labelStartDate {
             transform: translateY(-5px);
-            @include font-setting(400, 14px, 100%);  
+            @include font-setting(400, 14px, 110%);  
         }
-        &:focus~.labelEndDate {
+        &:focus~.labelEndDate, &:not(:placeholder-shown)~.labelEndDate {
             transform: translateY(-5px);
-            @include font-setting(400, 14px, 100%);  
+            @include font-setting(400, 14px, 110%);  
         }
     }
     label {
@@ -350,38 +303,15 @@
     input {
         margin-top: 0;
         padding: 18px 16px; 
-        &:focus {
+        &::placeholder {
+            color: transparent;
+        }
+        &:focus, &:not(:placeholder-shown) {
             padding-top: 27px;
             padding-bottom: 11px;
+            color: $dark-gray;
         }
-        &:focus~.labelTime {
-            background-color: transparent;
-            transform: translateY(-5px);
-            @include font-setting(400, 14px, 100%);  
-        }
-    }
-    label {
-        top: 0;
-        left: 7px;
-        height: 15px;
-        background-color: $main-white;
-        // transform-origin: 0 0;
-        // @include font-setting(400, 20px, 110%);  
-        // transition: opacity .15s ease-in-out, transform .15s ease-in-out;
-        // opacity: 1;
-        // transform: translateY(10px);
-    }
-}
-.eventLocation {
-    position: relative;
-    input {
-        margin-top: 0;
-        padding: 18px 16px; 
-        &:focus {
-            padding-top: 27px;
-            padding-bottom: 11px;
-        }
-        &:focus~.labelLocation {
+        &:focus~.labelTime, &:not(:placeholder-shown)~.labelTime {
             transform: translateY(-5px);
             @include font-setting(400, 14px, 100%);  
         }
@@ -419,4 +349,12 @@
             letter-spacing: -0.28px;
         }
     }
+}
+.submitEventBtn {
+    margin-top: 37px;
+    padding: 21px 32px;
+    align-self: center;
+    background-color: $main-black;
+    color: $main-white;
+    border-radius: 12px;
 }

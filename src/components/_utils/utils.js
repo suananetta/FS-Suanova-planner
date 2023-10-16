@@ -1,5 +1,14 @@
 import moment from 'moment';
-import { uploadFile } from '../_axios/requests';
+import { uploadFilesFX } from '../_store/events';
+
+
+export const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+export const colors = {
+    darkGray: '#A4A4A4',
+    mainBlack: '#0D0C0C',
+    white: '#FFF',
+    mainAccent: '#F51B1B'
+}
 
 export let getMonthDays = (date) => {
     moment.updateLocale('ru', {week: {dow: 1}});
@@ -9,16 +18,4 @@ export let getMonthDays = (date) => {
 
     let arr = [...Array(42)].map(() => d.add(1, 'day').clone());
     return arr;
-}
-
-export let uploadFiles = async(files) => {
-    let formData = new FormData();
-
-    Array.from(files).forEach((file) => {
-        formData.append('files', file);         
-    })
-
-    formData.getAll('files').forEach((file) => {
-        uploadFile(file).then(res => console.log(res));    
-    });
 }

@@ -43,15 +43,6 @@ sample({
     target: $userToken
 })
 
-// sample({
-//     clock: getUserName,
-//     source: $userName,
-//     fn: (source, payload) => {
-//         return payload;
-//     },
-//     target: $userName
-// })
-
 export const model = {
     $userToken,
     $userName,

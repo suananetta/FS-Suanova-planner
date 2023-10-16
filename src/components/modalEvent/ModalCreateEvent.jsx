@@ -3,36 +3,43 @@ import { useEffect, useState } from 'react'
 import { useUnit } from 'effector-react'
 import Image from 'next/image'
 
+import moment from "moment"
+import "moment/locale/ru"
+
 import { redcollar, ttcomons } from '@/app/fonts'
 import styles from './modalCreateEvent.module.scss'
 
 import { model as authModel } from '../_store/auth'
+import { model as dateModel } from '../_store/dateControl'
 import { validateFile } from '../_utils/validation'
-import { uploadFile } from '../_axios/requests'
+import { createNewEvent, uploadFile } from '../_axios/requests'
 
 import Button from '../_shared/button/Button'
-import ParticipantComponent from './participantComponent/participantComponent'
+import Participants from './participants/Participants'
 import FileUploader from './fileUploader/FileUploader'
 import FileUploaderPreview from './fileUploader/FileUploaderPreview'
-import MiniCalendar from './miniCalendar/MiniCalendar'
+import EventDates from './eventDates/EventDates'
 
 function ModalCreateEvent({setModalOpened, setToken}) {
-    const [userName, getAllUsersFx] = useUnit([
+    const [userName, getAllUsersFx, getUserInfo, getUserName] = useUnit([
         authModel.$userName,
-        authModel.getAllUsersFx
-    ])
-    
+        authModel.getAllUsersFx,
+        authModel.getUserInfoFx,
+        authModel.getUserName
+    ]);
+
     let [allUsers, setAllUsers] = useState([]);
 
     let [eventTitle, setEventTitle] = useState('');
     let [eventDescription, setEventDescription] = useState('');
     let [eventParticipants, setEventParticipants] = useState([]);
+    let [eventTime, setEventTime] = useState('');
     let [eventLocation, setEventLocation] = useState('');
     let [eventPhotos, setEventPhotos] = useState([]);
-    // console.log(eventPhotos);
+    let [eventStart, setEventStart] = useState('');
+    let [eventEnd, setEventEnd] = useState('');
+console.log(eventPhotos);
     let [showUsersList, setShowUsersList] = useState(false);
-    let [showCalendar, setShowCalendar] = useState(false);
-    // let [drag, setDrag] = useState(false)
 
     let [errorFile, setErrorFile] = useState('')
 
@@ -41,11 +48,29 @@ function ModalCreateEvent({setModalOpened, setToken}) {
         setAllUsers(res);
     } 
 
-    // console.log(allUsers);
-    // console.log(eventParticipants);
+    let getUser = async() => {
+        let name = await getUserInfo();
+        getUserName(name);
+    }
+
+    let uploadFiles = (files) => {
+        let formData = new FormData();
+        let uploadedFiles = [];
+
+        Array.from(files).forEach((file) => {
+            formData.append('files', file);         
+        })
+
+        formData.getAll('files').forEach((file) => {
+            uploadFile(file).then(res => uploadedFiles.push(res.data[0].id))
+        });
+
+        return uploadedFiles;
+    }
 
     useEffect(() => {
-        getUsersArray()
+        getUsersArray();
+        getUser();
     }, [])
 
     let addParticipant = (e) => {
@@ -92,18 +117,43 @@ function ModalCreateEvent({setModalOpened, setToken}) {
         setEventPhotos(arr);
     }
 
+    let submitEvent = async() => {
+        let partisipantsIDs = [];
+
+        eventParticipants.map((participant) => {
+            partisipantsIDs.push(participant.id)
+        })
+
+        let photos = uploadFiles(eventPhotos);
+
+        let eventData = {
+            "data": {
+              "dateStart": eventStart,
+              "title": eventTitle,
+              "description": eventDescription,
+              "photos": photos,
+              "location": eventLocation,
+              "dateEnd": eventEnd,
+              "participants": partisipantsIDs,
+              "owner": userName
+            }
+        }
+
+        let res = await createNewEvent(eventData);
+        console.log(eventData);
+    }
+
     let required = <span className={styles.required}>*</span>
 
     return (
         <div className={styles.modalCreateEvent}>
 
             <h2 className={redcollar.className}>Создание события</h2>
-            <div className={styles.eventForm}>
-
+            <form className={styles.eventForm}>
                 <div className={styles.eventDescriptionInfo}>
 
                     <div className={styles.eventInfoItem}>
-                        <input className={ttcomons.className} type='text' id='eventTitle' maxLength={140} onChange={(e) => {setEventTitle(e.target.value)}} required/>
+                        <input className={ttcomons.className} type='text' id='eventTitle' maxLength={140} onChange={(e) => {setEventTitle(e.target.value)}} placeholder='' required/>
                         <label className={styles.eventLable} htmlFor='eventTitle'>Название{required}</label>
                     </div>
 
@@ -112,6 +162,7 @@ function ModalCreateEvent({setModalOpened, setToken}) {
                             className={ttcomons.className} 
                             id='eventDescription' 
                             maxLength={1000} 
+                            placeholder=''
                             onChange={(e) => {setEventDescription(e.target.value)}} 
                             required
                         />
@@ -119,43 +170,14 @@ function ModalCreateEvent({setModalOpened, setToken}) {
                     </div>
 
                     <div className={styles.eventInfoItem}>
-                        {
-                            eventParticipants.length > 0?
-                            <div className={styles.participatorsInfoItem}>
-                                <input 
-                                    className={ttcomons.className} 
-                                    readOnly
-                                    id='eventPartisipants' 
-                                    onFocus={() => setShowUsersList(!showUsersList)} 
-                                />
-                                <label className={styles.participatorsLable} htmlFor='eventPartisipants'>Участники</label>
-                            </div>
-                            :
-                            <>
-                                <input 
-                                    className={ttcomons.className} 
-                                    type='text' 
-                                    id='eventPartisipants' 
-                                    onFocus={() => setShowUsersList(!showUsersList)} 
-                                />
-                                <label className={styles.eventLable} htmlFor='eventPartisipants'>Участники</label>
-                            </>
-                        }
-                            <ParticipantComponent
-                                arr={eventParticipants}
-                                chosen={true}
-                                remove={(e) => removeParticipant(e)}
-                            />
-                        {
-                            showUsersList?
-                                <ParticipantComponent
-                                    arr={allUsers}
-                                    chosen={false}
-                                    add={(e) => {addParticipant(e)}}
-                                />
-                            :
-                                <></>
-                        }
+                        <Participants
+                            allUsers={allUsers}
+                            eventParticipants={eventParticipants}
+                            showUsersList={showUsersList}
+                            setShowUsersList={setShowUsersList}
+                            removeParticipant={removeParticipant}
+                            addParticipant={addParticipant}
+                        />
                     </div>
                     
                     <FileUploader addPhotos={addPhotos} errors={errorFile}/>
@@ -164,30 +186,23 @@ function ModalCreateEvent({setModalOpened, setToken}) {
                 <div className={styles.eventOrgInfo}>
 
                     <div className={styles.eventDates}>
-                        <div className={styles.eventDate}>
-                            <input className={styles.startDate} type='text' id='startDate' placeholder='дд-мм-гггг' required readOnly onClick={e => setShowCalendar(!showCalendar)}/>
-                            <label className={styles.labelStartDate} htmlFor='startDate'>Начало{required}</label>
-                        </div>
-                        <div className={styles.eventDate}>
-                            <input className={styles.endDate} type='text' id='endDate' placeholder='дд-мм-гггг' readOnly onClick={e => setShowCalendar(!showCalendar)}/>
-                            <label className={styles.labelEndDate} htmlFor='endDate'>Конец</label>
-                        </div>
-                        {
-                            showCalendar?
-                                <MiniCalendar/>
-                            :
-                            <></>
-                        }
+                        <EventDates
+                            eventStart={eventStart}
+                            setEventStart={setEventStart}
+                            eventEnd={eventEnd}
+                            setEventEnd={setEventEnd}
+                            required={required}
+                        />
                     </div>
 
                     <div className={styles.eventTime}>
-                        <input className={styles.eventName} type='time' id='time' required/>
+                        <input className={styles.eventName} type='time' id='time' onClick={(e) => setEventTime(e.target.value)} required/>
                         <label className={styles.labelTime} htmlFor='time'>Время{required}</label>
                     </div>
 
-                    <div className={styles.eventLocation}>
-                        <input className={styles.eventName} type='text' id='location' maxLength={140}/>
-                        <label className={styles.labelLocation} htmlFor='location'>Место проведения{required}</label>
+                    <div className={styles.eventInfoItem}>
+                        <input className={ttcomons.className} type='text' id='location' maxLength={140} placeholder='' onChange={(e) => setEventLocation(e.target.value)}/>
+                        <label className={styles.eventLable} htmlFor='location'>Место проведения{required}</label>
                     </div>
 
                     <div className={styles.eventInitiator}>
@@ -203,8 +218,14 @@ function ModalCreateEvent({setModalOpened, setToken}) {
                     </div>
                 </div>
 
-            </div>
+            </form>
 
+            <Button
+                btnClass={styles.submitEventBtn}
+                btnName='Создать'
+                disabled={false}
+                onClick = {submitEvent}
+            />
         </div>
     )
 }

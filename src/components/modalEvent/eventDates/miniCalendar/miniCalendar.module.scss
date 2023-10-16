@@ -1,5 +1,5 @@
-@import '../../_shared/styles/mixins.scss';
-@import '../../_shared/styles/vars.scss';
+@import '../../../_shared/styles/mixins.scss';
+@import '../../../_shared/styles/vars.scss';
 
 .miniCalendar {
     z-index: 999;
@@ -40,19 +40,25 @@
 }
 .cells {
     display: grid;
-    align-items: center;
     grid-template-columns: repeat(7, 1fr);
     grid-gap: 24px;
+    @include font-setting(400, 18px, 100%);  
+    letter-spacing: -0.36px;
 }
 .cell {
     width: 24px;
     height: 24px;
+    cursor: pointer;
+    align-items: center;
+    background-color: $main-gray;
+    border-radius: 4px;
+    @include display-setting(row, center, center);
 }
 .arrowForwardBtn {
-    background-image: url(../../../../public/arrow-forward.svg);
+    background-image: url(../../../../../public/arrow-forward.svg);
 }
 .arrowBackBtn {
-    background-image: url(../../../../public/arrow-back.svg);
+    background-image: url(../../../../../public/arrow-back.svg);
 }
 .submitDateBtn {
     width: 100%;

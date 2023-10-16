@@ -3,9 +3,13 @@ import moment from "moment"
 import "moment/locale/ru"
 
 const $currentDate = createStore(moment());
+const $customDate = createStore(null);
 
 const prevMonth = createEvent();
 const nextMonth = createEvent();
+const setCustomDate = createEvent();
+
+$customDate.on(setCustomDate, (_, payload) => payload)
 
 sample({
     clock: prevMonth,
@@ -27,6 +31,8 @@ sample({
 
 export const model = {
     $currentDate,
+    $customDate,
     prevMonth,
-    nextMonth
+    nextMonth,
+    setCustomDate
 }

@@ -9,12 +9,13 @@ import { ttcomons, redcollar } from './fonts'
 
 import { model as modalModel } from '@/components/_store/modalControl'
 import { model as authModel} from '@/components/_store/auth'
+
 import Header from '@/components/header/Header'
 import Calendar from '@/components/calendar/Calendar'
 import Modal from '@/components/_shared/modal/Modal'
 import ModalAuth from '@/components/modalAuth/modalAuth'
 import ModalCreateEvent from '@/components/modalEvent/ModalCreateEvent'
-import MiniCalendar from '@/components/modalEvent/miniCalendar/MiniCalendar'
+import MiniCalendar from '@/components/modalEvent/eventDates/miniCalendar/MiniCalendar'
 
 
 

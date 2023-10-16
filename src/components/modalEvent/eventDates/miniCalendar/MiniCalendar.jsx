@@ -1,38 +1,52 @@
 'use client'
 
 import { useUnit } from "effector-react"
-import { useEffect, useState } from 'react'
-import Link from "next/link"
-import Image from "next/image"
-
-import { redcollar } from '@/app/fonts'
-import styles from './miniCalendar.module.scss'
+import { useState } from 'react'
 
 import moment from "moment"
 import "moment/locale/ru"
 
-import { model as monthModel } from '../../_store/monthControl'
-import { getMonthDays } from "@/components/_utils/utils"
+import { redcollar } from '@/app/fonts'
+import styles from './miniCalendar.module.scss'
+
+import { model as dateModel } from '../../../_store/dateControl'
+import { weekDays, colors, getMonthDays } from "@/components/_utils/utils"
 import Button from "@/components/_shared/button/Button"
 
-function MiniCalendar() {
-    const initialDate = useUnit(monthModel.$currentDate);
-    const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+function MiniCalendar({showCalendar, setDate}) {
+    const [initialDate, setCustomDate] = useUnit([
+        dateModel.$currentDate,
+        dateModel.setCustomDate
+    ]);
 
     let [currentDate, setCurrentDate] = useState(initialDate);
     let [currentMonth, setCurrentMonth] = useState(currentDate.format('MMMM YYYY'));
     let [monthDays, setMonthDays] = useState(getMonthDays(currentDate));
+    let [pickedDate, setPickedDate] = useState('');
+
+    let updateCalendar = (date) => {
+        setCurrentMonth(date.format('MMMM YYYY'));
+        setMonthDays(getMonthDays(date));
+    }
 
     let showNextMonth = () => {
         setCurrentDate(currentDate.add(1, 'month'));
-        setCurrentMonth(currentDate.format('MMMM YYYY'));
-        setMonthDays(getMonthDays(currentDate))
+        updateCalendar(currentDate);
     }
 
     let showPrevMonth = () => {
         setCurrentDate(currentDate.subtract(1, 'month'));
-        setCurrentMonth(currentDate.format('MMMM YYYY'));
-        setMonthDays(getMonthDays(currentDate))
+        updateCalendar(currentDate);
+    }
+
+    let handleClick = (e) => {
+        setPickedDate(e.target.dataset.date);
+    }
+
+    let submitClick = () => {
+        setCustomDate(pickedDate);
+        showCalendar(false);
+        setDate(pickedDate);
     }
 
     return (
@@ -69,16 +83,33 @@ function MiniCalendar() {
                 {
                     monthDays.map((day) => {
                         let color;
+                        let backgroundColor;
                         let currentMonth = currentDate.month();
 
                         if(day.format() <= moment().format() || day.month() !== currentMonth) {
-                            color = '#A4A4A4';
+                            color = colors.darkGray;
                         } else {
-                            color = '#000';
+                            color = colors.mainBlack;
+                        }
+
+                        if(day.toISOString(true) === pickedDate) {
+                            backgroundColor = colors.mainAccent;
+                            color = colors.white;
+                        } else {
+                            backgroundColor = colors.white;
                         }
 
                         return (
-                            <div key={day.format()} className={styles.cell} style={{color: `${color}`}}>
+                            <div 
+                                key={day.format()} 
+                                className={styles.cell} 
+                                style={{
+                                    color: `${color}`,
+                                    backgroundColor: `${backgroundColor}`
+                                }} 
+                                data-date={day.toISOString(true)}
+                                onClick={(e) => handleClick(e)}
+                            >
                                 {day.format('D')}
                             </div>
                         )
@@ -89,11 +120,7 @@ function MiniCalendar() {
                 btnClass={styles.submitDateBtn}
                 btnName={'Применить'}
                 disabled={false}
-                // onClick={() => {
-                //     nextMonth();
-                //     setMonthDays(getMonthDays(currentDate));
-                //     setCurrentMonth(currentDate.format('MMMM'));
-                // }}
+                onClick={submitClick}
             />
         </div>
     )
