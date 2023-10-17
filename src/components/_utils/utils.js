@@ -1,8 +1,7 @@
 import moment from 'moment';
-import { uploadFilesFX } from '../_store/events';
-
 
 export const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
 export const colors = {
     darkGray: '#A4A4A4',
     mainBlack: '#0D0C0C',

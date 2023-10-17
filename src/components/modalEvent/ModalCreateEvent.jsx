@@ -1,17 +1,16 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useUnit } from 'effector-react'
-import Image from 'next/image'
 
-import moment from "moment"
+import moment from 'moment'
 import "moment/locale/ru"
 
 import { redcollar, ttcomons } from '@/app/fonts'
 import styles from './modalCreateEvent.module.scss'
 
 import { model as authModel } from '../_store/auth'
-import { model as dateModel } from '../_store/dateControl'
-import { validateFile } from '../_utils/validation'
+import { model as modalModel } from '../_store/modalControl'
+import { validateFile, validateTime } from '../_utils/validation'
 import { createNewEvent, uploadFile } from '../_axios/requests'
 
 import Button from '../_shared/button/Button'
@@ -19,8 +18,11 @@ import Participants from './participants/Participants'
 import FileUploader from './fileUploader/FileUploader'
 import FileUploaderPreview from './fileUploader/FileUploaderPreview'
 import EventDates from './eventDates/EventDates'
+import CreateEventResult from './createEventResult/CreateEventResult'
+import CancelСonfirmation from './createEventResult/CancelСonfirmation'
+import Modal from '../_shared/modal/Modal'
 
-function ModalCreateEvent({setModalOpened, setToken}) {
+function ModalCreateEvent({setModalOpened}) {
     const [userName, getAllUsersFx, getUserInfo, getUserName] = useUnit([
         authModel.$userName,
         authModel.getAllUsersFx,
@@ -28,7 +30,16 @@ function ModalCreateEvent({setModalOpened, setToken}) {
         authModel.getUserName
     ]);
 
+    const [modalOpened, additionalModal, controlEventModal, controlModalBackground, callAdditionalModal] = useUnit([
+        modalModel.$modalOpened,
+        modalModel.$additionalModal,
+        modalModel.controlEventModal,
+        modalModel.controlModalBackground,
+        modalModel.callAdditionalModal
+    ])
+
     let [allUsers, setAllUsers] = useState([]);
+    let [eventStatus, setEventStatus] = useState('');
 
     let [eventTitle, setEventTitle] = useState('');
     let [eventDescription, setEventDescription] = useState('');
@@ -38,10 +49,13 @@ function ModalCreateEvent({setModalOpened, setToken}) {
     let [eventPhotos, setEventPhotos] = useState([]);
     let [eventStart, setEventStart] = useState('');
     let [eventEnd, setEventEnd] = useState('');
-console.log(eventPhotos);
+
     let [showUsersList, setShowUsersList] = useState(false);
 
-    let [errorFile, setErrorFile] = useState('')
+    let [errorFile, setErrorFile] = useState('');
+
+    let [photosIDs, setPhotosIDs] = useState([]);
+    let [inappropriateData, setInappropriateData] = useState(true);
 
     let getUsersArray = async() => {
         let res = await getAllUsersFx();
@@ -53,7 +67,7 @@ console.log(eventPhotos);
         getUserName(name);
     }
 
-    let uploadFiles = (files) => {
+    let uploadFiles = async (files) => {
         let formData = new FormData();
         let uploadedFiles = [];
 
@@ -65,13 +79,31 @@ console.log(eventPhotos);
             uploadFile(file).then(res => uploadedFiles.push(res.data[0].id))
         });
 
-        return uploadedFiles;
+        setPhotosIDs(uploadedFiles);
+    }
+
+    let checkData = () => {
+        if( eventTitle.length > 0 && 
+            eventDescription.length > 0 &&
+            eventTime.length === 5 &&
+            eventStart !== '' &&
+            eventLocation.length > 0) 
+        {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     useEffect(() => {
         getUsersArray();
         getUser();
     }, [])
+
+    useEffect(() => {
+        let checkedData = checkData();
+        setInappropriateData(checkedData);
+    }, [eventTitle, eventDescription, eventTime, eventStart, eventLocation])
 
     let addParticipant = (e) => {
         let participant;
@@ -115,7 +147,7 @@ console.log(eventPhotos);
     let removePhoto = (e) => {   
         let arr = [...eventPhotos.filter((photo) => photo.name !== e.target.dataset.id)];
         setEventPhotos(arr);
-    }
+    }  
 
     let submitEvent = async() => {
         let partisipantsIDs = [];
@@ -124,108 +156,166 @@ console.log(eventPhotos);
             partisipantsIDs.push(participant.id)
         })
 
-        let photos = uploadFiles(eventPhotos);
+        await uploadFiles(eventPhotos);
+
+        let dateTime = eventStart.slice(0,11) + eventTime + eventStart.slice(16, eventStart.length);
 
         let eventData = {
             "data": {
-              "dateStart": eventStart,
+              "dateStart": dateTime,
               "title": eventTitle,
               "description": eventDescription,
-              "photos": photos,
+              "photos": photosIDs,
               "location": eventLocation,
-              "dateEnd": eventEnd,
+              "dateEnd": eventEnd? eventEnd : dateTime,
               "participants": partisipantsIDs,
               "owner": userName
             }
         }
 
-        let res = await createNewEvent(eventData);
-        console.log(eventData);
+        try {
+            let res = await createNewEvent(eventData);
+            setEventStatus(res.status);
+            controlModalBackground(res.status);
+        } catch(error) {
+            setEventStatus(error.response.status);
+            controlModalBackground(error.response.status);
+        }
+        
     }
 
     let required = <span className={styles.required}>*</span>
 
     return (
         <div className={styles.modalCreateEvent}>
+            {
+                additionalModal?
+                <Modal
+                    content={<CancelСonfirmation setModalOpened={setModalOpened}/>} 
+                    onClick={() => {
+                        callAdditionalModal();
+                    }}
+                />
+                :
+                <></>
+            }
+            {
+                eventStatus === ''?
+                    <>
+                    <h2 className={redcollar.className}>Создание события</h2>
+                    <form className={styles.eventForm}>
+                        <div className={styles.eventDescriptionInfo}>
+                            <div className={styles.eventInfoItem}>
+                                <input 
+                                    className={ttcomons.className} 
+                                    type='text' 
+                                    id='eventTitle' 
+                                    maxLength={140} 
+                                    onChange={(e) => {setEventTitle(e.target.value)}} 
+                                    placeholder='' 
+                                    required
+                                />
+                                <label className={styles.eventLable} htmlFor='eventTitle'>Название{required}</label>
+                            </div>
 
-            <h2 className={redcollar.className}>Создание события</h2>
-            <form className={styles.eventForm}>
-                <div className={styles.eventDescriptionInfo}>
+                            <div className={styles.eventInfoItem}>
+                                <textarea 
+                                    className={ttcomons.className} 
+                                    id='eventDescription' 
+                                    maxLength={1000} 
+                                    placeholder=''
+                                    onChange={(e) => {setEventDescription(e.target.value)}} 
+                                    required
+                                />
+                                <label className={styles.eventLable} htmlFor='eventDescription'>Описание{required}</label>
+                            </div>
 
-                    <div className={styles.eventInfoItem}>
-                        <input className={ttcomons.className} type='text' id='eventTitle' maxLength={140} onChange={(e) => {setEventTitle(e.target.value)}} placeholder='' required/>
-                        <label className={styles.eventLable} htmlFor='eventTitle'>Название{required}</label>
-                    </div>
-
-                    <div className={styles.eventInfoItem}>
-                        <textarea 
-                            className={ttcomons.className} 
-                            id='eventDescription' 
-                            maxLength={1000} 
-                            placeholder=''
-                            onChange={(e) => {setEventDescription(e.target.value)}} 
-                            required
-                        />
-                        <label className={styles.eventLable} htmlFor='eventDescription'>Описание{required}</label>
-                    </div>
-
-                    <div className={styles.eventInfoItem}>
-                        <Participants
-                            allUsers={allUsers}
-                            eventParticipants={eventParticipants}
-                            showUsersList={showUsersList}
-                            setShowUsersList={setShowUsersList}
-                            removeParticipant={removeParticipant}
-                            addParticipant={addParticipant}
-                        />
-                    </div>
-                    
-                    <FileUploader addPhotos={addPhotos} errors={errorFile}/>
-                </div>
-
-                <div className={styles.eventOrgInfo}>
-
-                    <div className={styles.eventDates}>
-                        <EventDates
-                            eventStart={eventStart}
-                            setEventStart={setEventStart}
-                            eventEnd={eventEnd}
-                            setEventEnd={setEventEnd}
-                            required={required}
-                        />
-                    </div>
-
-                    <div className={styles.eventTime}>
-                        <input className={styles.eventName} type='time' id='time' onClick={(e) => setEventTime(e.target.value)} required/>
-                        <label className={styles.labelTime} htmlFor='time'>Время{required}</label>
-                    </div>
-
-                    <div className={styles.eventInfoItem}>
-                        <input className={ttcomons.className} type='text' id='location' maxLength={140} placeholder='' onChange={(e) => setEventLocation(e.target.value)}/>
-                        <label className={styles.eventLable} htmlFor='location'>Место проведения{required}</label>
-                    </div>
-
-                    <div className={styles.eventInitiator}>
-                        <div className={styles.userAvatar} style={{backgroundImage: `url(${'/user-head.png'})`}}></div>
-                        <div className={styles.initiatorName}>
-                            {userName}
-                            <span>Организатор</span>
+                            <div className={styles.eventInfoItem}>
+                                <Participants
+                                    allUsers={allUsers}
+                                    eventParticipants={eventParticipants}
+                                    showUsersList={showUsersList}
+                                    setShowUsersList={setShowUsersList}
+                                    removeParticipant={removeParticipant}
+                                    addParticipant={addParticipant}
+                                />
+                            </div>
+                            
+                            <FileUploader addPhotos={addPhotos} errors={errorFile}/>
                         </div>
-                    </div>
 
-                    <div className={styles.eventPhotos}>
-                        <FileUploaderPreview arr={eventPhotos} removePhoto={removePhoto}/>
-                    </div>
-                </div>
+                        <div className={styles.eventOrgInfo}>
+                            <div className={styles.eventDates}>
+                                <EventDates
+                                    eventStart={eventStart}
+                                    setEventStart={setEventStart}
+                                    eventEnd={eventEnd}
+                                    setEventEnd={setEventEnd}
+                                    required={required}
+                                />
+                            </div>
 
-            </form>
+                            <div className={styles.eventTime}>
+                                <input 
+                                    className={styles.eventName} 
+                                    type='text' 
+                                    id='time' 
+                                    placeholder='-- : --' 
+                                    maxLength={5}
+                                    onKeyUp={(e) => {
+                                        validateTime(e);
+                                        setEventTime(e.target.value);
+                                    }}
+                                    required
+                                />
+                                <label className={styles.labelTime} htmlFor='time'>Время{required}</label>
+                            </div>
 
-            <Button
-                btnClass={styles.submitEventBtn}
-                btnName='Создать'
-                disabled={false}
-                onClick = {submitEvent}
-            />
+                            <div className={styles.eventInfoItem}>
+                                <input className={ttcomons.className} type='text' id='location' maxLength={140} placeholder='' onChange={(e) => setEventLocation(e.target.value)}/>
+                                <label className={styles.eventLable} htmlFor='location'>Место проведения{required}</label>
+                            </div>
+
+                            <div className={styles.eventInitiator}>
+                                <div className={styles.userAvatar} style={{backgroundImage: `url(${'/user-head.png'})`}}></div>
+                                <div className={styles.initiatorName}>
+                                    {userName}
+                                    <span>Организатор</span>
+                                </div>
+                            </div>
+
+                            <div className={styles.eventPhotos}>
+                                <FileUploaderPreview arr={eventPhotos} removePhoto={removePhoto}/>
+                            </div>
+                        </div>
+                    </form>
+
+                    <Button
+                        btnClass={styles.submitEventBtn}
+                        btnName='Создать'
+                        disabled={inappropriateData}
+                        onClick = {submitEvent}
+                    />
+                    </>
+                :
+                <Modal
+                    content={
+                        <CreateEventResult
+                            status={eventStatus}
+                            eventTitle={eventTitle}
+                            eventStart={eventStart}
+                            eventTime={eventTime}
+                            eventLocation={eventLocation}
+                            setModalOpened={setModalOpened}
+                        />
+                    } 
+                    onClick={() => {
+                        controlEventModal();
+                        controlModalBackground(null);
+                        setModalOpened(modalOpened.eventModal);
+                    }}
+                />
+            }
         </div>
     )
 }

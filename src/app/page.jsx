@@ -20,11 +20,14 @@ import MiniCalendar from '@/components/modalEvent/eventDates/miniCalendar/MiniCa
 
 
 export default function Home() {
-  const [modalOpened, controAuthlModal, controlEventModal] = useUnit ([
+  const [modalOpened, additionalModal, controAuthlModal, controlEventModal, controlModalBackground, callAdditionalModal] = useUnit ([
     modalModel.$modalOpened,
-    // modalModel.$createEventModal,
+    modalModel.$additionalModal,
     modalModel.controAuthlModal,
-    modalModel.controlEventModal
+    modalModel.controlEventModal,
+    modalModel.controlModalBackground,
+    modalModel.callAdditionalModal,
+    modalModel.controlAdditionalModal
   ]);
 
   const [userToken, getUserToken] = useUnit([
@@ -36,6 +39,7 @@ export default function Home() {
   let [token, setToken] = useState(userToken);
   let [authModalOpened, setAuthModalOpened] = useState(modalOpened.authlModal);
   let [createEventModalOpened, setCreateEventModalOpened] = useState(modalOpened.eventModal);
+  let [background, setBackground] = useState('');
   
 
   useEffect(() => {
@@ -71,10 +75,12 @@ export default function Home() {
         {
           createEventModalOpened?
             <Modal 
-                content={<ModalCreateEvent/>} 
+                content={<ModalCreateEvent setModalOpened={setCreateEventModalOpened}/>} 
                 onClick={() => {
-                    controlEventModal();
-                    setCreateEventModalOpened(modalOpened.eventModal);
+                      callAdditionalModal();
+                      // controlEventModal();
+                      // controlModalBackground(null);
+                      // setCreateEventModalOpened(modalOpened.eventModal);
                   } 
                 }
             />

@@ -110,6 +110,7 @@ function Header({setMonthDays, openAuth, createEvent, token}) {
                                     () => {
                                         controlEventModal();
                                         createEvent(modalOpened.eventModal);
+                                        console.log(modalOpened.eventModal);
                                     }
                                 }
                             />

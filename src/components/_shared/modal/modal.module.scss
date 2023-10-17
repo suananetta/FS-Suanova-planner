@@ -16,7 +16,7 @@
 .modalContent {
     height: max-content;
     width: max-content;
-    padding: 40px 64px 64px;
+    padding: 40px 64px 60px;
     background-color: $main-white;
     border-radius: 64px;
     @include display-setting(column, center, center);

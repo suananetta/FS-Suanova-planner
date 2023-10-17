@@ -2,7 +2,8 @@
 @import '../_shared/styles/vars.scss';
 
 .modalCreateEvent {
-    width: 947px;
+    width: max-content;
+    min-width: 610px;
     @include display-setting(column, flex-start, flex-start);
     h2 {
         align-self: center;
@@ -25,11 +26,6 @@
         height: 170px;
         width: 582px;      
         opacity: 0;
-    }
-    input[type=time] {
-        &::placeholder {
-            display: none;
-        }
     }
     label {
         position: absolute;
@@ -123,7 +119,6 @@
     width: 309px;
     height: 40px;
     padding: 8px;
-    // border-radius: 12px;
     @include display-setting(row, flex-start, center);
     &:hover {
         cursor: pointer;
@@ -218,8 +213,6 @@
         text-wrap: nowrap;
         border: 1px dashed $main-gray;
         border-radius: 12px;
-        // transform-origin: 0 0;
-        // @include font-setting(400, 20px, 110%);  
     }
 }
 .eventFileError {
@@ -309,7 +302,9 @@
         &:focus, &:not(:placeholder-shown) {
             padding-top: 27px;
             padding-bottom: 11px;
-            color: $dark-gray;
+            &::placeholder {
+                color: $main-black;
+            }
         }
         &:focus~.labelTime, &:not(:placeholder-shown)~.labelTime {
             transform: translateY(-5px);
@@ -319,11 +314,6 @@
     label {
         top: 0;
         left: 7px;
-        // transform-origin: 0 0;
-        // @include font-setting(400, 20px, 110%);  
-        // transition: opacity .15s ease-in-out, transform .15s ease-in-out;
-        // opacity: 1;
-        // transform: translateY(10px);
     }
 }
 .eventInitiator {
@@ -350,11 +340,69 @@
         }
     }
 }
-.submitEventBtn {
+.submitEventBtn, .eventSuccessBtn {
     margin-top: 37px;
     padding: 21px 32px;
     align-self: center;
     background-color: $main-black;
     color: $main-white;
     border-radius: 12px;
+}
+.eventResult {
+    margin-bottom: 71px;
+    min-width: 610px;
+    @include font-setting(400, 18px, 100%);
+    letter-spacing: -0.36px;
+    h2 {
+        width: 70%;
+        @include font-setting(400, 64px, 120%);
+        letter-spacing: -2.56px;  
+    }
+    p {
+        margin: 0;
+    }
+    span {
+        color: $main-accent;
+    }
+}
+.septum {
+    height: 18px;
+    width: 1px;
+    margin: 0 16px;
+    background-color: $main-gray;
+}
+.eventInfo {
+    @include display-setting(column, flex-start, flex-start);  
+    span {
+        @include font-setting(500, 20px, 140%);
+        letter-spacing: -0.4px;
+    }
+}
+.eventDateInfo {
+    @include display-setting(row, flex-start, flex-start); 
+    @include font-setting(400, 18px, 100%);
+    letter-spacing: -0.36px;
+}
+.cancelCreateEvent {
+    @include display-setting(column, center, center);  
+    h2 {
+        width: 70%;
+        text-align: center;
+        margin-bottom: 64px;
+    }
+    button {
+        padding: 21px 32px;
+        border-radius: 12px;
+        border: 1px solid $main-black;
+        &:nth-child(1) {
+            margin-right: 24px;
+        }
+        &:hover {
+            background-color: $main-black;
+            color: $main-white;
+        }
+    }
+}
+.cancelBtns {
+    @include display-setting(row, center, center);  
 }

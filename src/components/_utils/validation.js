@@ -17,6 +17,36 @@ export function validateFile(files) {
     return errors;
 }
 
+let timeMask = (value) => {
+    if(value.match(/^\d{2}$/) !== null) {
+        value = value + ':';
+    }
+
+    value = value.replace(/[^\dh:]/, "");
+    value = value.replace(/^[^0-2]/, "");
+    value = value.replace(/^([2-9])[4-9]/, "$1");
+    value = value.replace(/^\d[:h]/, "");
+    value = value.replace(/^([01][0-9])[^:h]/, "$1");
+    value = value.replace(/^(2[0-3])[^:h]/, "$1");      
+    value = value.replace(/^(\d{2}[:h])[^0-5]/, "$1");
+    value = value.replace(/^(\d{2}h)./, "$1");      
+    value = value.replace(/^(\d{2}:[0-5])[^0-9]/, "$1");
+    value = value.replace(/^(\d{2}:\d[0-9])./, "$1");
+
+    return value;
+}
+
+export function validateTime(e) {
+    let val = e.target.value;
+    let lastLength;
+    
+    do {
+      lastLength = val.length;
+      val = timeMask(val);
+    } while (val.length > 0 && lastLength !== val.length);
+
+    e.target.value = val;
+}
 
 export function validateDate(start, end) {
     let startD = new Date(start);
