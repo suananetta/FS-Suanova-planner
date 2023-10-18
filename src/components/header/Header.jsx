@@ -14,7 +14,7 @@ import { model as modalModel } from '../_store/modalControl'
 import { model as  authModel} from '../_store/auth'
 
 import { getUserInfo, getAllUsers, getFiles, getEventsForPublic} from '../_axios/requests'
-import { getMonthDays } from '../_utils/utils'
+import { getMonthDays, arrowBack, arrowForward } from '../_utils/utils'
 import Button from '../_shared/button/Button'
 
 function Header({setMonthDays, openAuth, createEvent, token}) {
@@ -24,20 +24,22 @@ function Header({setMonthDays, openAuth, createEvent, token}) {
         dateModel.nextMonth,
     ]);
 
-    const [modalOpened, controAuthlModal, controlEventModal] = useUnit ([
-        modalModel.$modalOpened,
-        modalModel.controAuthlModal,
-        modalModel.controlEventModal
+    const [authlModal, eventModal, callAuthlModal, callEventModal] = useUnit ([
+        // modalModel.$modalOpened,
+        // modalModel.controAuthlModal,
+        // modalModel.controlEventModal,
+        modalModel.$authlModal,
+        modalModel.$eventModal,
+        modalModel.callAuthlModal,
+        modalModel.callEventModal
     ]);
-    // console.log(createEventModal);
+
     useEffect(() => {
         setMonthDays(getMonthDays(moment()));
     }, []);
 
     let [currentMonth, setCurrentMonth] = useState(currentDate.format('MMMM'));
 
-    let arrowBack = <Image src="/arrow-back.svg" width={32} height={32} alt="arrow back" />;
-    let arrowForward = <Image src="/arrow-forward.svg" width={32} height={32} alt="arrow forward" />; 
     let addEvent = <Image src="/add-event.svg" width={22} height={22} alt="arrow forward" />; 
 
     return (
@@ -54,20 +56,7 @@ function Header({setMonthDays, openAuth, createEvent, token}) {
                     <span className={styles.month}>
                         {currentMonth[0].toUpperCase() + currentMonth.slice(1) + ' '}
                         {currentDate.year() !== moment().year()? currentDate.year() : ''}
-                    </span>
-
-                    <Button
-                        btnClass={styles.addEventBtn}
-                        btnName='test'
-                        disabled={false}
-                        onClick = {
-                            async () => {
-                               let res = await getEventsForPublic();
-                               console.log(res.data.data);
-                            }
-                        }
-                    />
-                    
+                    </span>                  
                     <Button
                         btnClass={styles.arrowBackBtn}
                         btnName={arrowBack}
@@ -96,8 +85,9 @@ function Header({setMonthDays, openAuth, createEvent, token}) {
                             btnName='Войти'
                             disabled={false}
                             onClick = {() => {
-                                controAuthlModal();
-                                openAuth(modalOpened.authlModal);
+                                callAuthlModal()
+                                // controAuthlModal();
+                                // openAuth(modalOpened.authlModal);
                             }}
                         />
                     :
@@ -108,9 +98,9 @@ function Header({setMonthDays, openAuth, createEvent, token}) {
                                 disabled={false}
                                 onClick = {
                                     () => {
-                                        controlEventModal();
-                                        createEvent(modalOpened.eventModal);
-                                        console.log(modalOpened.eventModal);
+                                        callEventModal()
+                                        // controlEventModal();
+                                        // createEvent(modalOpened.eventModal);
                                     }
                                 }
                             />

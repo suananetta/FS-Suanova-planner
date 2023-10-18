@@ -7,16 +7,16 @@
     h1 {
         margin: 0;
         padding: 0;
-        @include font-setting(400, 64px, 120%);  
+        @include font-setting(400, 52px, 120%);  
     }
 }
 .logo {
     width: max-content;
-    margin-right: 19px;
+    margin-right: 15px;
     @include display-setting(row, center, center);
     span {
-        margin-left: 35px;
-        @include font-setting(400, 26px, 120%);  
+        margin-left: 15px;
+        @include font-setting(400, 18px, 120%);  
     }
 }
 .title {
@@ -27,8 +27,8 @@
 .headerControls {
     @include display-setting(row, center, center);
     span {
-        margin-right: 32px;
-        @include font-setting(400, 26px, 120%);  
+        margin-right: 22px;
+        @include font-setting(400, 18px, 120%);  
     }
 }
 .monthControls {
@@ -42,7 +42,7 @@
     }
 }
 .authorizationBtn {
-    margin-left: 134px;
+    margin-left: 84px;
     padding: 21px 32px;
     color: $main-white;
     background-color: $main-black;
@@ -50,7 +50,7 @@
     @include font-setting(400, 18px, 100%);  
 }
 .userBlock {
-    margin-left: 134px;
+    margin-left: 84px;
     @include display-setting(row, center, center);
 }
 .addEventBtn {
@@ -67,4 +67,30 @@
     background-color: $buttons-gray;
     background-size: 150% 100%;
     background-position: center;
+}
+@media (min-width: 1600px) {
+    .headerIntro {
+        h1 {
+            @include font-setting(400, 64px, 120%);  
+        }
+    }
+    .logo {
+        margin-right: 19px;
+        span {
+            margin-left: 35px;
+            @include font-setting(400, 26px, 120%);  
+        }
+    }
+    .headerControls {
+        span {
+            margin-right: 32px;
+            @include font-setting(400, 26px, 120%);  
+        }
+    }
+    .authorizationBtn {
+        margin-left: 134px;
+    }
+    .userBlock {
+        margin-left: 134px;
+    }
 }

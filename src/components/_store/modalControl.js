@@ -1,57 +1,35 @@
 import { createEvent, createStore, sample } from "effector"
 
-const $modalOpened = createStore({
-    authlModal: false,
-    eventModal: false,
-    additionalModal: false
-});
-
 const $modalBackground = createStore(null);
+
+const $authlModal = createStore(false);
+const $eventModal = createStore(false);
 const $additionalModal = createStore(false);
+const $eventInfoModal = createStore(false);
 
-const controAuthlModal = createEvent();
-const controlEventModal = createEvent();
 const controlModalBackground = createEvent();
+
+const callAuthlModal = createEvent();
+const callEventModal = createEvent();
 const callAdditionalModal = createEvent();
-const controlAdditionalModal = createEvent();
+const callEventInfoModal = createEvent();
 
-$modalBackground.on(controlModalBackground, (_, payload) => payload)
-$additionalModal.on(callAdditionalModal, (source) => !source)
+$modalBackground.on(controlModalBackground, (_, payload) => payload);
 
-sample({
-    clock: controAuthlModal,
-    source: $modalOpened,
-    fn: (source) => {
-        source.authlModal = !source.authlModal;
-    },
-    target: $modalOpened
-})
-
-sample({
-    clock: controlEventModal,
-    source: $modalOpened,
-    fn: (source) => {
-        source.eventModal = !source.eventModal;
-    },
-    target: $modalOpened
-})
-
-sample({
-    clock: controlAdditionalModal,
-    source: $modalOpened,
-    fn: (source) => {
-        source.additionalModal = !source.additionalModal;
-    },
-    target: $modalOpened
-})
+$authlModal.on(callAuthlModal, (source) => !source);
+$eventModal.on(callEventModal, (source) => !source);
+$additionalModal.on(callAdditionalModal, (source) => !source);
+$eventInfoModal.on(callEventInfoModal, (source) => !source);
 
 export const model = {
-    $modalOpened,
     $modalBackground,
+    $authlModal,
+    $eventModal,
     $additionalModal,
-    controAuthlModal,
-    controlEventModal,
+    $eventInfoModal,
     controlModalBackground,
+    callAuthlModal,
+    callEventModal,
     callAdditionalModal,
-    controlAdditionalModal
+    callEventInfoModal
 }

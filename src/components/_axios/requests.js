@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-import { model as authModel } from '../_store/auth';
-
 const BASE_URL = 'http://localhost:1337/api';
 
 const plannerApi = axios.create({
@@ -62,11 +60,27 @@ export const getFiles = async () => {
     return plannerApiLoged.get(`/upload/files`)
 }
 
+export const getFile = async (id) => {
+    return plannerApi.get(`/upload/files/${id}`, {id})
+}
+
 export const createNewEvent = async (eventData) => {
-    return plannerApiLoged.post(`/events`, eventData)
+    return plannerApiLoged.post(`events`, eventData)
+}
+
+export const joinEvent = async () => {
+    return plannerApiLoged.post(`/events/2/join`)
+}
+
+export const leaveEvent = async () => {
+    return plannerApiLoged.post(`/events/2/leave`)
 }
 
 export const getEventsForPublic = async () => {
     return plannerApi.get('/events?populate=*&filter[date][$gte]=2022-10-14T14:00:00.000Z&filter[date][$lte]=2024-10-14T14:00:00.000Z')
+}
+
+export const getEventsForLogedUSer = async () => {
+    return plannerApiLoged.get('/events?populate=*&filter[date][$gte]=2022-10-14T14:00:00.000Z&filter[date][$lte]=2024-10-14T14:00:00.000Z')
 }
 

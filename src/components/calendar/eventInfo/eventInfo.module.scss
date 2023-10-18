@@ -1,0 +1,127 @@
+@import '../../_shared/styles/mixins.scss';
+@import '../../_shared/styles/vars.scss';
+
+
+.eventBody {
+    width: 1000px;
+    @include display-setting(column, flex-start, flex-start);
+    h2 {
+        width: 70%;
+        margin-top: 0;
+        align-self: center;
+        text-align: center;
+        @include font-setting(400, 36px, 100%);  
+        letter-spacing: -0.72px;
+    }
+    h3 {
+        margin: 0;
+        @include font-setting(400, 24px, 100%);  
+        letter-spacing: -0.48px;
+    }
+}
+.eventOrgInfo {
+    margin-bottom: 40px;
+    @include display-setting(row, space-between, flex-start);
+    p {
+        margin: 0;
+        margin-left: 32px;
+        @include font-setting(500, 20px, 140%);  
+        letter-spacing: -0.4px;
+    }
+}
+.eventInfo {
+    min-width: 212px;
+    padding: 15px;
+    border-radius: 24px;
+    background-color: $light-gray;
+    @include display-setting(column, flex-start, flex-start);
+    @include font-setting(400, 18px, 100%);  
+    letter-spacing: -0.36px;
+    span {
+        margin-top: 16px;
+        @include font-setting(500, 18px, 100%); 
+    }
+}
+.eventParticipantsList {
+    margin-top: 24px;
+    margin-bottom: 56px;
+    @include display-setting(row, flex-start, flex-start);
+}
+.eventParticipant {
+    @include display-setting(row, flex-start, center);
+    &:not(:last-child) {
+        margin-right: 48px;
+    }
+    .participantImg {
+        margin-right: 12px;
+        width: 40px;
+        height: 40px;
+        border-radius: 40px;
+        background-color: $main-gray;
+        background-size: 150% 100%;
+        background-position: center;
+    }
+}
+.eventPhotos {
+    position: relative;
+    width: 100%;
+    min-height: 250px;
+}
+.eventGallery {
+    position: absolute;
+    margin: 32px 0;
+    @include display-setting(row, flex-start, center);
+}
+.photoItem {
+    width: 267px;
+    height: 160px;
+    margin-right: 16px;
+    border-radius: 24px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.photoControls {
+    @include display-setting(row, space-between, center);
+    button {
+        padding: 8px 16px;
+        background-color: $buttons-gray;
+        border-radius: 8px;
+        &:first-child {
+            margin-right: 8px;
+        }
+        &:disabled {
+            opacity: 0.4;
+        }
+    }
+    
+}
+.dots {
+    padding-top: 215px;
+    @include display-setting(row, center, center);
+}
+.dot {
+    width: 32px;
+    height: 4px;
+    border-radius: 4px;
+    // background-color: $buttons-gray;
+    &:not(:last-child) {
+        margin-right: 12px;
+    }
+    &:hover {
+        cursor: pointer;
+        background-color: $main-accent;
+    }
+}
+.controlParticipationBtn {
+    margin-top: 48px;
+    padding: 21px 37px;
+    align-self: center; 
+    color: $main-white;
+    background-color: $main-black;
+    border-radius: 12px;
+    @include font-setting(400, 18px, 100%); 
+}
+.accessLink {
+    cursor: pointer;
+    color: $main-accent;
+}

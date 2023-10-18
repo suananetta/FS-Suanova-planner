@@ -11,10 +11,10 @@ import styles from '../modalCreateEvent.module.scss'
 import { model as modalModel } from '@/components/_store/modalControl'
 import Button from '@/components/_shared/button/Button'
     
-function CreateEventResult({status, eventTitle, eventStart, eventTime, eventLocation, setModalOpened}) {
-    const [modalOpened, controlEventModal] = useUnit ([
-        modalModel.$modalOpened,
-        modalModel.controlEventModal
+function CreateEventResult({status, eventTitle, eventStart, eventTime, eventLocation}) {
+    const [eventModal, callEventModal] = useUnit ([
+        modalModel.$eventModal,
+        modalModel.callEventModal
     ]);
 
     const controlModalBackground = useUnit(modalModel.controlModalBackground);
@@ -54,9 +54,8 @@ function CreateEventResult({status, eventTitle, eventStart, eventTime, eventLoca
                 btnClass={styles.eventSuccessBtn}
                 btnName={status === 200? 'Отлично' : 'Хорошо'}
                 onClick = {() => {
-                    controlEventModal();
+                    callEventModal()
                     controlModalBackground(null);
-                    setModalOpened(modalOpened.eventModal);
                 }}
             />    
         </div>

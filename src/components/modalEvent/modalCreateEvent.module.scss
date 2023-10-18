@@ -216,6 +216,7 @@
     }
 }
 .eventFileError {
+    margin-top: 10px;
     color: $main-accent;
     text-align: center;
     @include display-setting(column, center, center);

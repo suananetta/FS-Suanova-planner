@@ -1,4 +1,14 @@
-import { uploadFile } from "../_axios/requests";
+
+export function validateEmail(email) {
+    const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
+
+    if (EMAIL_REGEXP.test(email)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 
 export function validateFile(files) {
     let errors = []

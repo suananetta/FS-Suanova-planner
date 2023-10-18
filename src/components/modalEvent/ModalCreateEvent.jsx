@@ -22,18 +22,16 @@ import CreateEventResult from './createEventResult/CreateEventResult'
 import CancelСonfirmation from './createEventResult/CancelСonfirmation'
 import Modal from '../_shared/modal/Modal'
 
-function ModalCreateEvent({setModalOpened}) {
-    const [userName, getAllUsersFx, getUserInfo, getUserName] = useUnit([
-        authModel.$userName,
+function ModalCreateEvent() {
+    const [userInfo, getAllUsersFx, getUserInfo] = useUnit([
+        authModel.$userInfo,
         authModel.getAllUsersFx,
         authModel.getUserInfoFx,
-        authModel.getUserName
     ]);
-
-    const [modalOpened, additionalModal, controlEventModal, controlModalBackground, callAdditionalModal] = useUnit([
-        modalModel.$modalOpened,
+    console.log(userInfo);
+    const [additionalModal, callEventModal, controlModalBackground, callAdditionalModal] = useUnit([
         modalModel.$additionalModal,
-        modalModel.controlEventModal,
+        modalModel.callEventModal,
         modalModel.controlModalBackground,
         modalModel.callAdditionalModal
     ])
@@ -56,30 +54,27 @@ function ModalCreateEvent({setModalOpened}) {
 
     let [photosIDs, setPhotosIDs] = useState([]);
     let [inappropriateData, setInappropriateData] = useState(true);
-
+    console.log(photosIDs);
     let getUsersArray = async() => {
         let res = await getAllUsersFx();
         setAllUsers(res);
     } 
 
     let getUser = async() => {
-        let name = await getUserInfo();
-        getUserName(name);
+        await getUserInfo();
+        // getUserName(name);
     }
 
     let uploadFiles = async (files) => {
         let formData = new FormData();
-        let uploadedFiles = [];
 
         Array.from(files).forEach((file) => {
             formData.append('files', file);         
         })
 
         formData.getAll('files').forEach((file) => {
-            uploadFile(file).then(res => uploadedFiles.push(res.data[0].id))
+            uploadFile(file).then(res => photosIDs.push(res.data[0].id))
         });
-
-        setPhotosIDs(uploadedFiles);
     }
 
     let checkData = () => {
@@ -123,7 +118,6 @@ function ModalCreateEvent({setModalOpened}) {
     }
 
     let addPhotos = (files) => {
-        // let formData = new FormData();
         let errors = validateFile(files);
 
         Array.from(files).map((file) => {
@@ -132,16 +126,11 @@ function ModalCreateEvent({setModalOpened}) {
                     setEventPhotos([...eventPhotos, ...files.filter((file) => file.name !== error.fileName)]);
                 })
             } else {
-                // formData.append('files', file);
                 setEventPhotos([...eventPhotos, ...files]);
             }            
         })
 
         setErrorFile(errors);
-
-        // formData.getAll('files').forEach((file) => {
-        //     uploadFile(file).then(res => setEventPhotos([...eventPhotos, ...res.data]));           
-        // });
     }
 
     let removePhoto = (e) => {   
@@ -169,7 +158,7 @@ function ModalCreateEvent({setModalOpened}) {
               "location": eventLocation,
               "dateEnd": eventEnd? eventEnd : dateTime,
               "participants": partisipantsIDs,
-              "owner": userName
+              "owner": userInfo.username
             }
         }
 
@@ -191,7 +180,7 @@ function ModalCreateEvent({setModalOpened}) {
             {
                 additionalModal?
                 <Modal
-                    content={<CancelСonfirmation setModalOpened={setModalOpened}/>} 
+                    content={<CancelСonfirmation/>} 
                     onClick={() => {
                         callAdditionalModal();
                     }}
@@ -279,7 +268,7 @@ function ModalCreateEvent({setModalOpened}) {
                             <div className={styles.eventInitiator}>
                                 <div className={styles.userAvatar} style={{backgroundImage: `url(${'/user-head.png'})`}}></div>
                                 <div className={styles.initiatorName}>
-                                    {userName}
+                                    {userInfo.username}
                                     <span>Организатор</span>
                                 </div>
                             </div>
@@ -306,13 +295,11 @@ function ModalCreateEvent({setModalOpened}) {
                             eventStart={eventStart}
                             eventTime={eventTime}
                             eventLocation={eventLocation}
-                            setModalOpened={setModalOpened}
                         />
                     } 
                     onClick={() => {
-                        controlEventModal();
+                        callEventModal();
                         controlModalBackground(null);
-                        setModalOpened(modalOpened.eventModal);
                     }}
                 />
             }

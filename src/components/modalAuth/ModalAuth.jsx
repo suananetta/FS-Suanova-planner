@@ -8,23 +8,21 @@ import { redcollar } from '@/app/fonts'
 
 import Button from '../_shared/button/Button'
 import PasswordInput from './passwordInput/passwordInput'
+import { validateEmail } from '../_utils/validation'
+import { colors } from '../_utils/utils'
 import { model as authModel} from '../_store/auth'
-import { model as modalModel} from '../_store/modalControl'
+import { model as modalControl} from '../_store/modalControl'
 
-function ModalAuth({setModalOpened, setToken}) {
-    const [checkUser, loginUser, registerUser, getUserInfo, getUserToken, getUserName] = useUnit([
+function ModalAuth({setToken}) {
+    const [checkUser, loginUser, registerUser, getUserInfo, getUserToken] = useUnit([
         authModel.checkUserFx,
         authModel.loginUserFx,
         authModel.registerUserFx,
         authModel.getUserInfoFx,
         authModel.getUserToken,
-        authModel.getUserName
     ]);
     
-    const [modalOpened, controlModal] = useUnit ([
-        modalModel.$modalOpened,
-        modalModel.controAuthlModal,
-    ]);
+    const [callAuthlModal] = useUnit ([modalControl.callAuthlModal]);
 
     let [emailFound, setEmailFound] = useState(false);
     let [registrartion, setRegistretion] = useState(false);
@@ -36,20 +34,33 @@ function ModalAuth({setModalOpened, setToken}) {
     let [showPassword, setShowPassword] = useState(false);
     let [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
+    let [errorEmail, setErrorEmail] = useState('');
+    let [errorLoginPassword, setErrorLoginPassword] = useState('');
+
     let infoIcon = <Image src="/info.svg" width={24} height={24} alt="information" />; 
     let openedPassword = "/password-show.svg";
     let hidenPassword = "/password-hide.svg";
 
-    let handleClickEmail = async () => {
-        try {
-            let result = await checkUser(email);
-            if(result.status === 204) {
-                setEmailFound(true);
-                setRegistretion(false);
+    let handleClickEmail = async (email) => {
+        console.log(email);
+        console.log(validateEmail(email));
+        if(validateEmail(email)) {
+            setErrorEmail('');
+            try {
+                let result = await checkUser(email);
+                if(result.status === 204) {
+                    setEmailFound(true);
+                    setRegistretion(false);
+                }
+            } catch (error) {
+                setRegistretion(true);
             }
-        } catch (error) {
-            setRegistretion(true);
-        }
+        } else {
+            setErrorEmail({
+                error: true,
+                message: 'Некорректный e-mail'
+            })
+        }  
     }
 
     let handleClickLogin = async () => {
@@ -58,19 +69,34 @@ function ModalAuth({setModalOpened, setToken}) {
             "password": password
         }
 
-        let token = await loginUser(userInfo);
+        try {
+            let token = await loginUser(userInfo);
 
-        getUserToken(token.data.jwt);
-        setToken(token.data.jwt);
-
-        localStorage.setItem('token', token.data.jwt)
-
-        let name = await getUserInfo();
-        getUserName(name);
+            getUserToken(token.data.jwt);
+            setToken(token.data.jwt);
+    
+            localStorage.setItem('token', token.data.jwt)
+    
+            await getUserInfo();
+            setErrorLoginPassword('');
+        } catch (error) {
+            console.log(error);
+            if(error.status === 400) {
+                setErrorLoginPassword({
+                    error: true,
+                    message: 'Неверный пароль'
+                })
+            }  else {
+                setErrorLoginPassword({
+                    error: true,
+                    message: 'Что-то пошло не так, попробуйте позже'
+                }) 
+            }
+        }
+        
 
         if(token.status === 200) {
-            controlModal();
-            setModalOpened(modalOpened.authlModal);
+            callAuthlModal()
         }
     }
 
@@ -85,16 +111,14 @@ function ModalAuth({setModalOpened, setToken}) {
         getUserToken(result.data.jwt);
 
         let name = await getUserInfo();
-        getUserName(name);
 
         if(result.status === 200) {
-            controlModal();
-            setModalOpened(modalOpened.authlModal);
+            callAuthlModal()
         }
     }
 
     return (
-        <div className={styles.modalAuth}>
+        <div className={styles.modalAuthorization}>
             <h2 className={redcollar.className}>{registrartion? 'Регистрация' : 'Вход'}</h2>
             {
                 registrartion?
@@ -132,14 +156,23 @@ function ModalAuth({setModalOpened, setToken}) {
                         !emailFound?
                             <>
                             <div className={styles.modalInput}>
-                                <input className={styles.auth} type="email" id="email" onChange={(e) => {setEmail(e.target.value)}}/>
+                                <input 
+                                    className={styles.auth} 
+                                    style={{
+                                        border: `1px solid ${errorEmail? colors.mainAccent : colors.mainBlack}`
+                                    }}
+                                    type="email" 
+                                    id="email" 
+                                    onChange={(e) => {setEmail(e.target.value)}}
+                                />
                                 <label className={styles.auth} htmlFor="email">E-mail</label>
+                                <div className={styles.errorMessageEmail}>{errorEmail? errorEmail.message : ''}</div>
                             </div>
                             <Button
                                 btnClass={styles.modalContinueBtn}
                                 btnName='Далее'
                                 disabled={email.trim().length === 0? true : false}
-                                onClick={handleClickEmail}
+                                onClick={() => handleClickEmail(email)}
                             />
                             </>
                             :
@@ -152,6 +185,7 @@ function ModalAuth({setModalOpened, setToken}) {
                                 background={showPassword? openedPassword : hidenPassword}
                                 onClick={() => setShowPassword(!showPassword)}
                             /> 
+                            <div className={styles.errorMessage}>{errorEmail? errorEmail.message : ''}</div>
                             <Button
                                 btnClass={styles.modalContinueBtn}
                                 btnName='Далее'

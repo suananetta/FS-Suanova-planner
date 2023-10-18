@@ -31,10 +31,11 @@
 }
 
 .cell {
-    min-height: 128px;
+    height: 128px;
+    overflow: hidden;
+    padding: 12px 12px 18px 0;
     background-color:$main-white;
-    padding: 12px 12px 18px 0px;
-    @include display-setting(row, flex-end, baseline);
+    @include display-setting(column, flex-start, flex-end);
     &:first-child {
         border-radius: 24px 0 0 0;
     }
@@ -46,5 +47,37 @@
     }
     &:nth-child(42) {
         border-radius: 0 0 24px 0;
+    }
+}
+.events {
+    @include display-setting(column, flex-start, flex-end);
+}
+.event {
+    position: relative;
+    max-width: 102px;
+    cursor: pointer;
+    padding: 0 6px 0 15px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    background-color: $buttons-gray;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include font-setting(500, 20px, 140%);  
+    letter-spacing: -0.4px;
+}
+.userPaticipant {
+    position: absolute;
+    top: 8px;
+    left: 4px;
+    width: 8px;
+    height: 8px;
+    margin-right: 4px;
+    border-radius: 8px;
+    background-color: $main-accent;
+}
+@media (min-width: 1600px) {
+    .event {
+        max-width: 151px;
     }
 }

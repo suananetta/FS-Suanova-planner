@@ -4,16 +4,14 @@ import { useUnit } from 'effector-react'
 import { redcollar } from '@/app/fonts'
 import styles from '../modalCreateEvent.module.scss'
 
-import { model as modalModel } from '@/components/_store/modalControl'
+import { model as modalControl } from '@/components/_store/modalControl'
 import Button from '@/components/_shared/button/Button'
    
-function CancelСonfirmation({setModalOpened}) {
-    const [modalOpened, controlEventModal, controlModalBackground, callAdditionalModal, controlAdditionalModal] = useUnit([
-        modalModel.$modalOpened,
-        modalModel.controlEventModal,
-        modalModel.controlModalBackground,
-        modalModel.callAdditionalModal,
-        modalModel.controlAdditionalModal
+function CancelСonfirmation() {
+    const [callEventModal, controlModalBackground, callAdditionalModal] = useUnit([
+        modalControl.callEventModal,
+        modalControl.controlModalBackground,
+        modalControl.callAdditionalModal,
     ]);
 
     return (
@@ -23,20 +21,15 @@ function CancelСonfirmation({setModalOpened}) {
                 <Button
                     btnClass={styles.cancelBtn}
                     btnName={'Нет'}
-                    onClick = {() => {
-                        callAdditionalModal();
-                        controlAdditionalModal();
-                        setModalOpened(modalOpened.additionalModal);
-                    }}
+                    onClick = {callAdditionalModal}
                 />  
                 <Button
                     btnClass={styles.cancelBtn}
                     btnName={"Да"}
                     onClick = {() => {
-                        controlEventModal();
+                        callEventModal();
                         callAdditionalModal();
                         controlModalBackground(null);
-                        setModalOpened(modalOpened.eventModal);
                     }}
                 />  
             </div>
