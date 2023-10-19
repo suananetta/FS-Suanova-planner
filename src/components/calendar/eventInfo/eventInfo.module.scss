@@ -47,20 +47,56 @@
     margin-bottom: 56px;
     @include display-setting(row, flex-start, flex-start);
 }
+.eventOwner, .eventParticipantItem {
+    position: relative;
+    min-width: 100px;
+    min-height: 45px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 .eventParticipant {
+    min-width: 100px;
     @include display-setting(row, flex-start, center);
     &:not(:last-child) {
         margin-right: 48px;
     }
-    .participantImg {
-        margin-right: 12px;
-        width: 40px;
-        height: 40px;
-        border-radius: 40px;
-        background-color: $main-gray;
-        background-size: 150% 100%;
-        background-position: center;
-    }
+}
+.participantImg, .participantImgItem {
+    margin-right: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    background-color: $main-gray;
+    background-size: 150% 100%;
+    background-position: center;
+}
+.eventOwnerBadge {
+    position: absolute;
+    top: 28px;
+    left: 50px;
+    padding: 2px 4px 1px 4px;
+    color: $badge-accent;
+    background-color: $badge;
+    border-radius: 8px;
+    @include font-setting(400, 14px, 100%);  
+    letter-spacing: -0.28px;
+}
+.eventParticipantBadge {
+    position: absolute;
+    top: 28px;
+    left: 52px;
+    color: $main-gray;
+    @include font-setting(400, 14px, 100%);  
+}
+.etcParticipants {
+    @include display-setting(row, flex-start, center);
+}
+.participantImgs {
+    @include display-setting(row, flex-start, center);
+}
+.participantImgItem {
+    border: 1px solid $main-white;
 }
 .eventPhotos {
     position: relative;
@@ -93,7 +129,6 @@
             opacity: 0.4;
         }
     }
-    
 }
 .dots {
     padding-top: 215px;
@@ -103,7 +138,6 @@
     width: 32px;
     height: 4px;
     border-radius: 4px;
-    // background-color: $buttons-gray;
     &:not(:last-child) {
         margin-right: 12px;
     }
@@ -124,4 +158,72 @@
 .accessLink {
     cursor: pointer;
     color: $main-accent;
+}
+
+.eventSuccessBtn {
+    margin-top: 37px;
+    padding: 21px 32px;
+    align-self: center;
+    background-color: $main-black;
+    color: $main-white;
+    border-radius: 12px;
+}
+.eventResult {
+    margin-bottom: 71px;
+    min-width: 610px;
+    @include font-setting(400, 18px, 100%);
+    letter-spacing: -0.36px;
+    h2 {
+        width: 70%;
+        margin-top: 0;
+        @include font-setting(400, 64px, 120%);
+        letter-spacing: -2.56px;  
+    }
+    p {
+        margin: 0;
+    }
+    span {
+        color: $main-accent;
+    }
+}
+.septum {
+    height: 18px;
+    width: 1px;
+    margin: 0 16px;
+    background-color: $main-gray;
+}
+.eventInfoModal {
+    @include display-setting(column, flex-start, flex-start);  
+    span {
+        @include font-setting(500, 20px, 140%);
+        letter-spacing: -0.4px;
+    }
+}
+.eventDateInfo {
+    @include display-setting(row, flex-start, flex-start); 
+    @include font-setting(400, 18px, 100%);
+    letter-spacing: -0.36px;
+}
+.cancelCreateEvent {
+    @include display-setting(column, center, center);  
+    h2 {
+        width: 70%;
+        text-align: center;
+        margin-bottom: 64px;
+    }
+    button {
+        padding: 21px 32px;
+        border-radius: 12px;
+        border: 1px solid $main-black;
+        &:nth-child(1) {
+            margin-right: 24px;
+        }
+        &:hover {
+            background-color: $main-black;
+            color: $main-white;
+        }
+    }
+}
+.cancelBtns {
+    @include display-setting(row, center, center);  
 }

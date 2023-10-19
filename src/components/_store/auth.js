@@ -30,7 +30,6 @@ const getAllUsersFx = createEffect(async() => {
 });
 
 let getUserToken = createEvent();
-// let getUserName = createEvent();
 
 $userInfo.on(getUserInfoFx.doneData, (_, result) => result)
 

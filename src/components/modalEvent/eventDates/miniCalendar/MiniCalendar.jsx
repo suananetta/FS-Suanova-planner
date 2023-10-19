@@ -1,5 +1,4 @@
 'use client'
-
 import { useUnit } from "effector-react"
 import { useState } from 'react'
 
@@ -10,7 +9,9 @@ import { redcollar } from '@/app/fonts'
 import styles from './miniCalendar.module.scss'
 
 import { model as dateModel } from '../../../_store/dateControl'
+
 import { weekDays, colors, getMonthDays } from "@/components/_utils/utils"
+
 import Button from "@/components/_shared/button/Button"
 
 function MiniCalendar({showCalendar, setDate}) {

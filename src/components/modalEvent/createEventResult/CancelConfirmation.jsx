@@ -7,11 +7,11 @@ import styles from '../modalCreateEvent.module.scss'
 import { model as modalControl } from '@/components/_store/modalControl'
 import Button from '@/components/_shared/button/Button'
    
-function CancelСonfirmation() {
+function CancelConfirmation() {
     const [callEventModal, controlModalBackground, callAdditionalModal] = useUnit([
         modalControl.callEventModal,
         modalControl.controlModalBackground,
-        modalControl.callAdditionalModal,
+        modalControl.callAdditionalCreateEventModal,
     ]);
 
     return (
@@ -36,4 +36,4 @@ function CancelСonfirmation() {
         </div>
     )
 }
-export default CancelСonfirmation;
+export default CancelConfirmation;

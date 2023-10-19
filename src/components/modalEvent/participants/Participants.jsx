@@ -1,5 +1,4 @@
 'use client'
-
 import { ttcomons } from '@/app/fonts'
 import styles from '../modalCreateEvent.module.scss'
 

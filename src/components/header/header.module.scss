@@ -60,6 +60,8 @@
     border-radius: 12px;
 }
 .userAvatar {
+    position: relative;
+    cursor: pointer;
     width: 80px;
     height: 80px;
     margin-left: 33px;
@@ -67,6 +69,18 @@
     background-color: $buttons-gray;
     background-size: 150% 100%;
     background-position: center;
+}
+.logout {
+    position: absolute;
+    top: 130px;
+    right: 60px;
+    .logoutBtn {
+        color: $main-black;
+        background-color: transparent;
+        padding: 21px 42px;
+        border: 1px solid $main-gray;
+        border-radius: 12px;
+    }
 }
 @media (min-width: 1600px) {
     .headerIntro {

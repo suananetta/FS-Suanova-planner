@@ -8,8 +8,10 @@ import { redcollar } from '@/app/fonts'
 
 import Button from '../_shared/button/Button'
 import PasswordInput from './passwordInput/passwordInput'
-import { validateEmail } from '../_utils/validation'
+
+import { validateEmail, validatePassword } from '../_utils/validation'
 import { colors } from '../_utils/utils'
+
 import { model as authModel} from '../_store/auth'
 import { model as modalControl} from '../_store/modalControl'
 
@@ -36,14 +38,13 @@ function ModalAuth({setToken}) {
 
     let [errorEmail, setErrorEmail] = useState('');
     let [errorLoginPassword, setErrorLoginPassword] = useState('');
+    let [errorRepeatPassword, setErrorRepeatPassword] = useState('');
 
     let infoIcon = <Image src="/info.svg" width={24} height={24} alt="information" />; 
     let openedPassword = "/password-show.svg";
     let hidenPassword = "/password-hide.svg";
 
     let handleClickEmail = async (email) => {
-        console.log(email);
-        console.log(validateEmail(email));
         if(validateEmail(email)) {
             setErrorEmail('');
             try {
@@ -79,9 +80,12 @@ function ModalAuth({setToken}) {
     
             await getUserInfo();
             setErrorLoginPassword('');
+
+            if(token.status === 200) {
+                callAuthlModal()
+            }
         } catch (error) {
-            console.log(error);
-            if(error.status === 400) {
+            if(error.response.status === 400) {
                 setErrorLoginPassword({
                     error: true,
                     message: 'Неверный пароль'
@@ -93,28 +97,44 @@ function ModalAuth({setToken}) {
                 }) 
             }
         }
-        
-
-        if(token.status === 200) {
-            callAuthlModal()
-        }
     }
 
-    let handleClickRegister = async () => {
+    let handleClickRegister = async (password) => {
         let userInfo = {
             "username": email,
             "email": email,
             "password": password
         }
-
-        let result = await registerUser(userInfo);
-        getUserToken(result.data.jwt);
-
-        let name = await getUserInfo();
-
-        if(result.status === 200) {
-            callAuthlModal()
-        }
+        if(validatePassword(password)) {
+            setErrorLoginPassword('');
+            if(password === repeatPassword) {
+                setErrorRepeatPassword('');
+                try {
+                    let result = await registerUser(userInfo);
+                    getUserToken(result.data.jwt);
+                    localStorage.setItem('token', result.data.jwt)
+            
+                    if(result.status === 200) {
+                        callAuthlModal()
+                    } 
+                } catch (error) {
+                    console.log(error.response.status);
+                }
+            }
+        } else {
+            if(!validatePassword(password)) {
+                setErrorLoginPassword({
+                    error: true,
+                    message: 'Используйте латинские буквы, цифры и спец символы'
+                })
+            }
+            if(password !== repeatPassword) {
+                setErrorRepeatPassword({
+                    error: true,
+                    message: 'Пароли не совпадают'
+                })
+            }
+        }       
     }
 
     return (
@@ -131,23 +151,27 @@ function ModalAuth({setToken}) {
                             className={styles.modalInput}
                             type={showPassword? 'text' : 'password'}
                             repeat={false}
+                            error={errorLoginPassword}
                             onChange={(e) => {setPassword(e.target.value)}}
                             background={showPassword? openedPassword : hidenPassword}
                             onClick={() => setShowPassword(!showPassword)}
                         />
+                        <div className={styles.errorMessageRegPassword}>{errorLoginPassword? errorLoginPassword.message : ''}</div>
                         <PasswordInput
                             className={styles.modalInput}
-                            type={showPassword? 'text' : 'password'}
+                            type={showRepeatPassword? 'text' : 'password'}
                             repeat={true}
+                            error={errorRepeatPassword}
                             onChange={(e) => {setRepeatPassword(e.target.value)}}
                             background={showRepeatPassword? openedPassword : hidenPassword}
                             onClick={() => setShowRepeatPassword(!showRepeatPassword)}
                         />
+                        <div className={styles.errorMessagePasswordRep}>{errorRepeatPassword? errorRepeatPassword.message : ''}</div>
                         <Button
                             btnClass={styles.modalContinueBtn}
                             btnName='Зарегистрироваться'
-                            disabled={false}
-                            onClick={handleClickRegister}
+                            disabled={password.trim().length === 0 || repeatPassword.trim().length === 0 ? true : false}
+                            onClick={() => handleClickRegister(password)}
                         />
                     </>
                     :
@@ -181,11 +205,12 @@ function ModalAuth({setToken}) {
                                 className={styles.modalInput}
                                 type={showPassword? 'text' : 'password'}
                                 repeat={false}
+                                error={errorLoginPassword}
                                 onChange={(e) => {setPassword(e.target.value)}}
                                 background={showPassword? openedPassword : hidenPassword}
                                 onClick={() => setShowPassword(!showPassword)}
                             /> 
-                            <div className={styles.errorMessage}>{errorEmail? errorEmail.message : ''}</div>
+                            <div className={styles.errorMessagePassword}>{errorLoginPassword? errorLoginPassword.message : ''}</div>
                             <Button
                                 btnClass={styles.modalContinueBtn}
                                 btnName='Далее'

@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:1337/api';
+const BASE_URL = 'https://planner.rdclr.ru/api';
+// 'https://planner.rdclr.ru/api'
+// 'http://localhost:1337/api';
 
 const plannerApi = axios.create({
     baseURL: BASE_URL,
@@ -68,12 +70,16 @@ export const createNewEvent = async (eventData) => {
     return plannerApiLoged.post(`events`, eventData)
 }
 
-export const joinEvent = async () => {
-    return plannerApiLoged.post(`/events/2/join`)
+export const updateNewEventWithPhotos = async (id, data) => {
+    return plannerApiLoged.put(`events/${id}`, {id, data})
 }
 
-export const leaveEvent = async () => {
-    return plannerApiLoged.post(`/events/2/leave`)
+export const joinEvent = async (eventID) => {
+    return plannerApiLoged.post(`/events/${eventID}/join`, {eventID})
+}
+
+export const leaveEvent = async (eventID) => {
+    return plannerApiLoged.post(`/events/${eventID}/leave`, {eventID})
 }
 
 export const getEventsForPublic = async () => {

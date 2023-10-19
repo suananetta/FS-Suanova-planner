@@ -3,11 +3,9 @@
 import { useEffect, useState } from 'react'
 import { useUnit } from "effector-react"
 
-import moment from "moment"
-
 import { ttcomons, redcollar } from './fonts'
 
-import { model as modalModel } from '@/components/_store/modalControl'
+import { model as modalControl } from '@/components/_store/modalControl'
 import { model as authModel} from '@/components/_store/auth'
 import { model as eventsModel } from '@/components/_store/events'
 
@@ -16,15 +14,14 @@ import Calendar from '@/components/calendar/Calendar'
 import Modal from '@/components/_shared/modal/Modal'
 import ModalAuth from '@/components/modalAuth/modalAuth'
 import ModalCreateEvent from '@/components/modalEvent/ModalCreateEvent'
-import MiniCalendar from '@/components/modalEvent/eventDates/miniCalendar/MiniCalendar'
-
 
 export default function Home() {
-  const [authlModal, eventModal, callAdditionalModal, callAuthlModal] = useUnit ([
-    modalModel.$authlModal,
-    modalModel.$eventModal,
-    modalModel.callAdditionalModal,
-    modalModel.callAuthlModal,
+  const [authlModal, eventModal, eventInfoModal, callAdditionalModal, callAuthlModal] = useUnit ([
+    modalControl.$authlModal,
+    modalControl.$eventModal,
+    modalControl.$eventInfoModal,
+    modalControl.callAdditionalCreateEventModal,
+    modalControl.callAuthlModal,
   ]);
 
   const [userToken, getUserToken, getUserInfo] = useUnit([
@@ -43,19 +40,21 @@ export default function Home() {
 
   useEffect(() => {
     if(localStorage.getItem('token') !== null) {
+      getUserInfo();
       setToken(localStorage.getItem('token'));
       getUserToken(localStorage.getItem('token'));
       getEventsForLogedUSer();
     } else {
       getEventsForPublic();
     }
-  }, [])
+  }, [[], userToken, eventInfoModal])
 
   return (
     <>
       <Header 
         setMonthDays={setMonthDays} 
         token={token}
+        setToken={setToken}
       />
       <main className={ttcomons.className}>
         <Calendar monthDays={monthDays}/>

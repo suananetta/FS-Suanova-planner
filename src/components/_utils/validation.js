@@ -9,6 +9,15 @@ export function validateEmail(email) {
 	}
 }
 
+export function validatePassword(password) {
+    const PASSWORD_REGEXP = /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8}/g
+
+    if (PASSWORD_REGEXP.test(password)) {
+		return true;
+	} else {
+		return false;
+	}
+}
 
 export function validateFile(files) {
     let errors = []
@@ -58,20 +67,20 @@ export function validateTime(e) {
     e.target.value = val;
 }
 
-export function validateDate(start, end) {
-    let startD = new Date(start);
-    let endD = new Date(end);
-    let now = new Date();
-    let error;
+// export function validateDate(start, end) {
+//     let startD = new Date(start);
+//     let endD = new Date(end);
+//     let now = new Date();
+//     let error;
 
-    if (startD.getTime() > now.getTime()) {
-        error = 'Дата не может быть больше текущей';
-        return error;
-    } else if(endD.getTime() < startD.getTime()) {
-        error = 'Дата начала не может быть больше даты окончания';
-        return error;
-    } else {
-        return true;
-    }
-}
+//     if (startD.getTime() > now.getTime()) {
+//         error = 'Дата не может быть больше текущей';
+//         return error;
+//     } else if(endD.getTime() < startD.getTime()) {
+//         error = 'Дата начала не может быть больше даты окончания';
+//         return error;
+//     } else {
+//         return true;
+//     }
+// }
 

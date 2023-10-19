@@ -1,9 +1,7 @@
 'use client'
-
 import { useEffect, useState } from 'react'
 import { useUnit } from 'effector-react'
 import moment from 'moment'
-
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -13,11 +11,10 @@ import { model as dateModel } from '../_store/dateControl'
 import { model as modalModel } from '../_store/modalControl'
 import { model as  authModel} from '../_store/auth'
 
-import { getUserInfo, getAllUsers, getFiles, getEventsForPublic} from '../_axios/requests'
 import { getMonthDays, arrowBack, arrowForward } from '../_utils/utils'
 import Button from '../_shared/button/Button'
 
-function Header({setMonthDays, openAuth, createEvent, token}) {
+function Header({setMonthDays, token, setToken}) {
     const [currentDate, prevMonth, nextMonth] = useUnit([
         dateModel.$currentDate,
         dateModel.prevMonth,
@@ -25,20 +22,20 @@ function Header({setMonthDays, openAuth, createEvent, token}) {
     ]);
 
     const [authlModal, eventModal, callAuthlModal, callEventModal] = useUnit ([
-        // modalModel.$modalOpened,
-        // modalModel.controAuthlModal,
-        // modalModel.controlEventModal,
         modalModel.$authlModal,
         modalModel.$eventModal,
         modalModel.callAuthlModal,
         modalModel.callEventModal
     ]);
 
+    const getUserToken = useUnit(authModel.getUserToken);
+
     useEffect(() => {
         setMonthDays(getMonthDays(moment()));
     }, []);
 
     let [currentMonth, setCurrentMonth] = useState(currentDate.format('MMMM'));
+    let [logout, setLogout] = useState(false);
 
     let addEvent = <Image src="/add-event.svg" width={22} height={22} alt="arrow forward" />; 
 
@@ -56,7 +53,7 @@ function Header({setMonthDays, openAuth, createEvent, token}) {
                     <span className={styles.month}>
                         {currentMonth[0].toUpperCase() + currentMonth.slice(1) + ' '}
                         {currentDate.year() !== moment().year()? currentDate.year() : ''}
-                    </span>                  
+                    </span>           
                     <Button
                         btnClass={styles.arrowBackBtn}
                         btnName={arrowBack}
@@ -84,11 +81,7 @@ function Header({setMonthDays, openAuth, createEvent, token}) {
                             btnClass={styles.authorizationBtn}
                             btnName='Войти'
                             disabled={false}
-                            onClick = {() => {
-                                callAuthlModal()
-                                // controAuthlModal();
-                                // openAuth(modalOpened.authlModal);
-                            }}
+                            onClick = {callAuthlModal}
                         />
                     :
                         <div className={styles.userBlock}>
@@ -96,15 +89,27 @@ function Header({setMonthDays, openAuth, createEvent, token}) {
                                 btnClass={styles.addEventBtn}
                                 btnName={addEvent}
                                 disabled={false}
-                                onClick = {
-                                    () => {
-                                        callEventModal()
-                                        // controlEventModal();
-                                        // createEvent(modalOpened.eventModal);
-                                    }
-                                }
+                                onClick = {callEventModal}
                             />
-                            <div className={styles.userAvatar} style={{backgroundImage: `url(${'/user-head.png'})`}}></div>
+                            <div className={styles.userAvatar} style={{backgroundImage: `url(${'/user-head.png'})`}} onClick={() => setLogout(!logout)}></div>
+                            {
+                                logout?
+                                <div className={styles.logout}>
+                                    <Button
+                                        btnClass={styles.logoutBtn}
+                                        btnName='Выйти'
+                                        disabled={false}
+                                        onClick = {() => {
+                                            localStorage.removeItem('token');
+                                            setToken(null);
+                                            getUserToken(null);
+                                            setLogout(!logout)
+                                        }}
+                                    />
+                                </div>
+                                :
+                                <></>
+                            }
                         </div>
                 }
                 </div>

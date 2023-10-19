@@ -11,7 +11,9 @@ export const colors = {
     buttonsGray: '#EFEFEF'
 }
 
-export const BASE_URL = 'http://localhost:1337';
+export const BASE_URL = 'https://planner.rdclr.ru';
+// 'https://planner.rdclr.ru';
+// 'http://localhost:1337';
 
 export let arrowBack = <Image src="/arrow-back.svg" width={32} height={32} alt="arrow back" />;
 export let arrowForward = <Image src="/arrow-forward.svg" width={32} height={32} alt="arrow forward" />; 

@@ -1,48 +1,40 @@
 'use client'
-
+import { useState } from "react"
 import { useUnit } from "effector-react"
 import Image from 'next/image'
+
 import moment from "moment"
 import "moment/locale/ru"
 
 import { redcollar, ttcomons } from '@/app/fonts'
 import styles from './eventInfo.module.scss'
 
-// import { model as monthModel } from '../_store/dateControl'
-// import { model as eventsModel } from "../_store/events"
 import { model as authModel } from "@/components/_store/auth"
 import { model as modalControl } from "@/components/_store/modalControl"
 import { arrowForward, arrowBack, BASE_URL, colors } from "@/components/_utils/utils"
-import { getFile, getFiles } from "@/components/_axios/requests"
-// import Modal from "../_shared/modal/Modal"
-import Button from "@/components/_shared/button/Button"
-import { useEffect, useState } from "react"
+import { joinEvent, leaveEvent } from "@/components/_axios/requests"
 
-function EventInfo({event, relevant}) {
+import Modal from "@/components/_shared/modal/Modal"
+import Button from "@/components/_shared/button/Button"
+import LeaveConfirmation from "./participationActions/LeaveConfirmation"
+import EtcParticipants from "./etcParticipants/etcParticipants"
+
+function EventInfo({event, relevant, isParticipant, isInitiator}) {
     const userInfo = useUnit(authModel.$userInfo)
 
-    const [callAuthlModal, callEventInfoModal] = useUnit([
+    const [additionalEvenLeaveModal, callAuthlModal, callEventInfoModal, callAdditionalEvenInfoModal, controlModalBackground, callAdditionalEvenLeaveModal] = useUnit([
+        modalControl.$additionalEvenLeaveModal,
         modalControl.callAuthlModal,
-        modalControl.callEventInfoModal
+        modalControl.callEventInfoModal,
+        modalControl.callAdditionalEvenInfoModal,
+        modalControl.controlModalBackground,
+        modalControl.callAdditionalEvenLeaveModal
     ])
     const [visiblePhotos, setVisiblePhotos] = useState(event.photos? event.photos.slice(0, 4) : []);
-
-    let [isParticipant, setIsParticipant] =useState(false);
 
     let [start, setStart] = useState(1);
     let [step, setStep] = useState(4);
     let [left, setLeft] = useState(0);
-
-    useEffect(() => {
-        console.log(userInfo);
-        if(event.participants) {
-            event.participants.map((participant) => {
-                if(participant.id === userInfo.id) {
-                    setIsParticipant(true)
-                }
-            })
-        }
-    }, [])
 
     let handleClickArrow = (e) => {
         if (e.currentTarget.dataset.id === 'forward') {
@@ -70,8 +62,40 @@ function EventInfo({event, relevant}) {
         }
     }
 
+    let joinEventFX = async () => {
+        try {
+            let res = await joinEvent(event.id);
+            callEventInfoModal();
+            callAdditionalEvenInfoModal();
+            controlModalBackground('joined');
+        } catch (error) {
+            console.log(error.response);
+        }
+    }
+
+    let leaveEventFX = async () => {
+        try {
+            let res = await leaveEvent(event.id);
+            callAdditionalEvenLeaveModal();
+            controlModalBackground(null);
+        } catch (error) {
+            console.log(error.response);
+        }
+    }
+
     return (
         <div className={styles.eventBody}>
+            {
+                additionalEvenLeaveModal?
+                    <Modal
+                        content={<LeaveConfirmation/>} 
+                        onClick={() => {
+                            callAdditionalEvenLeaveModal();
+                        }}
+                    />
+                :
+                    <></>
+            }
             <h2 className={redcollar.className}>{event.title}</h2>
             <div className={styles.eventOrgInfo}>
                 <div className={styles.eventInfo}>
@@ -88,15 +112,41 @@ function EventInfo({event, relevant}) {
                 <h3 className={redcollar.className}>Участники</h3>
                 <div className={styles.eventParticipantsList}>
                     {
+                        event.owner?
+                            <div className={styles.eventOwner}>
+                                <div className={styles.eventParticipant} key={event.owner.id}>
+                                    <div className={styles.participantImg} style={{backgroundImage: `url(${'/user-head.png'})`}}></div>
+                                    <span>{event.owner.username}</span>
+                                </div>
+                                <span className={styles.eventOwnerBadge}>Организатор</span>
+                            </div>
+                        :
+                            <></>
+                    }                           
+                    {
                         event.participants?
-                            event.participants.map((participant) => {
+                            event.participants
+                                .slice(0, event.owner? 4 : 5)
+                                .map((participant) => {
                                 return (
-                                    <div className={styles.eventParticipant} key={participant.id}>
-                                        <div className={styles.participantImg} style={{backgroundImage: `url(${'/user-head.png'})`}}></div>
-                                        <span>{participant.username}</span>
+                                    <div key={participant.id} className={styles.eventParticipantItem}>
+                                        <div className={styles.eventParticipant}>
+                                            <div className={styles.participantImg} style={{backgroundImage: `url(${'/user-head.png'})`}}></div>
+                                            <span>{participant.username}</span>
+                                        </div>
+                                        <span className={styles.eventParticipantBadge}>Участник</span>
                                     </div>
                                 )
                             })
+                        :
+                            <></>
+                    }
+                    {
+                        event.owner && event.participants && event.participants.length > 4?
+                            <EtcParticipants
+                                start={event.owner? 4 : 5}
+                                participants={event.participants}
+                            />
                         :
                             <></>
                     }
@@ -135,7 +185,6 @@ function EventInfo({event, relevant}) {
                     {
                         visiblePhotos?
                             visiblePhotos.map((photo) => {
-                                console.log(event.photos[event.photos.length-1].id);
                                 return (
                                     <div 
                                         key={photo.id}
@@ -183,55 +232,54 @@ function EventInfo({event, relevant}) {
                 !relevant?
                     <></>
                 :
-                    localStorage.getItem('token') !== null && !isParticipant?
-                        <Button
-                            btnClass={styles.controlParticipationBtn}
-                            btnName={'Присоединиться к событию'}
-                            // disabled={false}
-                            // onClick={() => {
-                            //     nextMonth();
-                            //     setMonthDays(getMonthDays(currentDate));
-                            //     setCurrentMonth(currentDate.format('MMMM'));
-                            // }}
-                        />
+                    localStorage.getItem('token') !== null && !isParticipant && !isInitiator?
+                            <Button
+                                btnClass={styles.controlParticipationBtn}
+                                btnName={'Присоединиться к событию'}
+                                disabled={false}
+                                onClick={joinEventFX}
+                            />
                         :
-                        localStorage.getItem('token') !== null && isParticipant?
-                        <div 
-                            className={redcollar.className} 
-                            style={{
-                                display: 'flex',
-                                alignSelf: 'center',
-                                marginTop: '64px'
-                            }}
-                        >
-                            Вы присоединились к событию. Если передумали, можете&nbsp;
-                            <span 
-                                className={styles.accessLink}
-                                
-                            >
-                                отменить участие.
-                            </span>
-                        </div>
-                        :
-                        <div 
-                            className={redcollar.className} 
-                            style={{
-                                display: 'flex',
-                                alignSelf: 'center',
-                                marginTop: '64px'
-                            }}
-                        >
-                            <span 
-                                className={styles.accessLink}
-                                onClick={() => {
-                                    callAuthlModal();
-                                    callEventInfoModal();
-                                }}
-                            >
-                                Войдите
-                            </span>
-                            , чтобы присоединиться к событию
-                        </div>
+                            localStorage.getItem('token') !== null && (isParticipant || isInitiator)?
+                                <div 
+                                    className={redcollar.className} 
+                                    style={{
+                                        display: 'flex',
+                                        alignSelf: 'center',
+                                        marginTop: '64px'
+                                    }}
+                                >
+                                    Вы присоединились к событию. Если передумали, можете&nbsp;
+                                    <span 
+                                        className={styles.accessLink}
+                                        onClick={leaveEventFX}
+                                    >
+                                        отменить участие.
+                                    </span>
+                                </div>
+                            :
+                                localStorage.getItem('token') === null?
+                                    <div 
+                                        className={redcollar.className} 
+                                        style={{
+                                            display: 'flex',
+                                            alignSelf: 'center',
+                                            marginTop: '64px'
+                                        }}
+                                    >
+                                        <span 
+                                            className={styles.accessLink}
+                                            onClick={() => {
+                                                callAuthlModal();
+                                                callEventInfoModal();
+                                            }}
+                                        >
+                                            Войдите
+                                        </span>
+                                        , чтобы присоединиться к событию
+                                    </div>
+                                :
+                                    <></>
             }
         </div>
     )

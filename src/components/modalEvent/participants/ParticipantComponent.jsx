@@ -1,12 +1,11 @@
 'use client'
-
 import Image from 'next/image'
+
 import styles from '../modalCreateEvent.module.scss'
 
 import Button from '@/components/_shared/button/Button'
 
 function ParticipantComponent({arr, chosen, add, remove}) {
-
     let removeParticipant = <Image src="/delete-participant.svg" width={24} height={24} alt="information" />; 
 
     return (

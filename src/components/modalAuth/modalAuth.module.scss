@@ -3,6 +3,7 @@
 
 
 .modalAuthorization {
+    position: relative;
     width: 100%;
     @include display-setting(column, center, center);
     h2 {
@@ -40,12 +41,26 @@
     border-radius: 12px;
     @include font-setting(400, 18px, 100%);  
 }
-.errorMessageEmail {
+.errorMessageEmail, .errorMessagePassword, .errorMessageRegPassword, .errorMessagePasswordRep {
     position: absolute;
-    top: 120px;
     color: $main-accent;
     @include font-setting(400, 14px, 120%);
     letter-spacing: -0.28px;
+}
+.errorMessageEmail {
+    top: 120px;
+}
+.errorMessagePassword {
+    top: 155px;
+    left: 0;
+}
+.errorMessageRegPassword {
+    bottom: 250px;
+    left: 275px;
+}
+.errorMessagePasswordRep {
+    bottom: 85px;
+    left: 275px;
 }
 .regInfo {
     width: 53%;

@@ -11,7 +11,7 @@ import styles from './modalCreateEvent.module.scss'
 import { model as authModel } from '../_store/auth'
 import { model as modalModel } from '../_store/modalControl'
 import { validateFile, validateTime } from '../_utils/validation'
-import { createNewEvent, uploadFile } from '../_axios/requests'
+import { createNewEvent, uploadFile, updateNewEventWithPhotos } from '../_axios/requests'
 
 import Button from '../_shared/button/Button'
 import Participants from './participants/Participants'
@@ -19,7 +19,7 @@ import FileUploader from './fileUploader/FileUploader'
 import FileUploaderPreview from './fileUploader/FileUploaderPreview'
 import EventDates from './eventDates/EventDates'
 import CreateEventResult from './createEventResult/CreateEventResult'
-import CancelСonfirmation from './createEventResult/CancelСonfirmation'
+import CancelConfirmation from './createEventResult/CancelConfirmation'
 import Modal from '../_shared/modal/Modal'
 
 function ModalCreateEvent() {
@@ -28,12 +28,12 @@ function ModalCreateEvent() {
         authModel.getAllUsersFx,
         authModel.getUserInfoFx,
     ]);
-    console.log(userInfo);
+
     const [additionalModal, callEventModal, controlModalBackground, callAdditionalModal] = useUnit([
-        modalModel.$additionalModal,
+        modalModel.$additionalCreateEventModal,
         modalModel.callEventModal,
         modalModel.controlModalBackground,
-        modalModel.callAdditionalModal
+        modalModel.callAdditionalCreateEventModal
     ])
 
     let [allUsers, setAllUsers] = useState([]);
@@ -54,7 +54,7 @@ function ModalCreateEvent() {
 
     let [photosIDs, setPhotosIDs] = useState([]);
     let [inappropriateData, setInappropriateData] = useState(true);
-    console.log(photosIDs);
+
     let getUsersArray = async() => {
         let res = await getAllUsersFx();
         setAllUsers(res);
@@ -62,19 +62,37 @@ function ModalCreateEvent() {
 
     let getUser = async() => {
         await getUserInfo();
-        // getUserName(name);
+    }
+
+    let getUploadedFileID = async(file) => {
+       let result = await uploadFile(file);
+       return result.data[0].id;
     }
 
     let uploadFiles = async (files) => {
         let formData = new FormData();
-
+        let uploadedFiles = [];
         Array.from(files).forEach((file) => {
             formData.append('files', file);         
         })
 
         formData.getAll('files').forEach((file) => {
-            uploadFile(file).then(res => photosIDs.push(res.data[0].id))
+            getUploadedFileID(file).then(res => uploadedFiles.push(res))
+            
         });
+
+        return uploadedFiles;
+    }
+
+    let createEvent = async(eventData) => {
+        try {
+            let res = await createNewEvent(eventData);
+            setEventStatus(res.status);
+            controlModalBackground(res.status);
+        } catch(error) {
+            setEventStatus(error.response.status);
+            controlModalBackground(error.response.status);
+        }
     }
 
     let checkData = () => {
@@ -145,16 +163,16 @@ function ModalCreateEvent() {
             partisipantsIDs.push(participant.id)
         })
 
-        await uploadFiles(eventPhotos);
-
         let dateTime = eventStart.slice(0,11) + eventTime + eventStart.slice(16, eventStart.length);
+
+        let photos = await uploadFiles(eventPhotos);
 
         let eventData = {
             "data": {
               "dateStart": dateTime,
               "title": eventTitle,
               "description": eventDescription,
-              "photos": photosIDs,
+              "photos": photos,
               "location": eventLocation,
               "dateEnd": eventEnd? eventEnd : dateTime,
               "participants": partisipantsIDs,
@@ -162,15 +180,7 @@ function ModalCreateEvent() {
             }
         }
 
-        try {
-            let res = await createNewEvent(eventData);
-            setEventStatus(res.status);
-            controlModalBackground(res.status);
-        } catch(error) {
-            setEventStatus(error.response.status);
-            controlModalBackground(error.response.status);
-        }
-        
+        return eventData;
     }
 
     let required = <span className={styles.required}>*</span>
@@ -180,7 +190,7 @@ function ModalCreateEvent() {
             {
                 additionalModal?
                 <Modal
-                    content={<CancelСonfirmation/>} 
+                    content={<CancelConfirmation/>} 
                     onClick={() => {
                         callAdditionalModal();
                     }}
@@ -283,7 +293,15 @@ function ModalCreateEvent() {
                         btnClass={styles.submitEventBtn}
                         btnName='Создать'
                         disabled={inappropriateData}
-                        onClick = {submitEvent}
+                        onClick = {async() => {
+                            let data = await submitEvent();
+                            await createEvent(data);
+                            // console.log(data);
+                            // let eventID = event.data.data.id;
+                            // console.log(data);
+                            // let update = await updateNewEventWithPhotos(eventID, data);
+                            // console.log(update);
+                        }}
                     />
                     </>
                 :

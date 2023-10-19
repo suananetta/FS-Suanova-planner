@@ -14,6 +14,7 @@ function Modal({content, onClick}) {
     ]);
 
     let close = <Image src="/close.svg" width={40} height={40} alt="close modal" />;
+    let joined = '/event-joined.png';
     let success = '/event-success1.png';
     let fail = '/event-fail.png';
 
@@ -22,7 +23,9 @@ function Modal({content, onClick}) {
             <div 
                 className={styles.modalContent}
                 style={{
-                    background: `url(${modalBackground === null? '' : modalBackground === 200? success : fail}) no-repeat bottom right, ${colors.white}` 
+                    background: `url(${modalBackground === null? '' 
+                                            : modalBackground === 'joined'? joined  
+                                            : modalBackground === 200? success : fail}) no-repeat bottom right, ${colors.white}` 
                 }}
             >
                 <Button
