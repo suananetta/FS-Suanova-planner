@@ -1,3 +1,18 @@
+## Стандартный запуск:
+- спулить репозиторий,
+- npm install,
+- npm run build,
+- npm run dev
+
+## Запуск с локальным сервером:
+- развернуть локальный backend стенд https://gitlab.rdclr.ru/rc-foundation/frontend/planner,
+- спулить репозиторий,
+- в файле \src\components\_axios\requests.js изменить значение переменной 'const BASE_URL' на адрес локального сервера,
+- в файле \src\components\_utils\utils.js изменить значение переменной 'export const BASE_URL' на адрес локального сервера(убрать часть '/api'),
+- npm install,
+- npm run build,
+- npm run dev
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

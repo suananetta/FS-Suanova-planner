@@ -89,6 +89,7 @@ function ModalCreateEvent() {
             let res = await createNewEvent(eventData);
             setEventStatus(res.status);
             controlModalBackground(res.status);
+            return res;
         } catch(error) {
             setEventStatus(error.response.status);
             controlModalBackground(error.response.status);
@@ -295,10 +296,10 @@ function ModalCreateEvent() {
                         disabled={inappropriateData}
                         onClick = {async() => {
                             let data = await submitEvent();
-                            await createEvent(data);
-                            // console.log(data);
+                            let event = await createEvent(data);
+                            // console.log(event);
                             // let eventID = event.data.data.id;
-                            // console.log(data);
+                            // console.log(event.data.data.id);
                             // let update = await updateNewEventWithPhotos(eventID, data);
                             // console.log(update);
                         }}
